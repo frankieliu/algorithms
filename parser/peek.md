@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/2425270/how-to-look-ahead-one-element-peek-in-a-python-generator

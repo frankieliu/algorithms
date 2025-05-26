@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from z import z
+from z2 import z
 
 class TestZ(TestCase):
     def test_z(self):

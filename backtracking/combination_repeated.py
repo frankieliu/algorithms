@@ -16,3 +16,14 @@ def unique_combinations(nums, k):
 
     backtrack(0, [])
     return result
+
+print(unique_combinations([1,1,2],2))
+"""
+Same as before:
+
+112
+                   []
+     [1]           [x] [2]    Note: don't reuse 1 as single element
+[1,1]    [1,2]
+[1,1,2]
+"""

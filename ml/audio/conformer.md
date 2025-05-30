@@ -1,7 +1,9 @@
 # TDT
-![TDT](image-6.png)
-![FastConformer](https://arxiv.org/abs/2305.05084)
-![TDT](https://arxiv.org/pdf/2304.06795)
+![TDT](image-6.png ) -->
+
+[FastConformer](https://arxiv.org/abs/2305.05084)
+
+[TDT](https://arxiv.org/pdf/2304.06795)
 
 FastConformer: optimized Conformer model with 8x depthwise-separable convolutional downsampling and other modifications
 

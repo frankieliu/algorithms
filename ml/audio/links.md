@@ -12,3 +12,4 @@ graves14 - End to End Speech Recognition with RNN (Graves)
 rxv/2305 - Fast Conformer (Nvidia)
 rxv/2005 - Conformer (Google)
 -->
+[Riverside Prof](https://github.com/maziarraissi/Applied-Deep-Learning)

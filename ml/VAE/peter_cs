@@ -1,0 +1,175 @@
+[CS294-158 SP24](https://www.youtube.com/watch?v=V9Roouqfu-M)
+[Notes](https://sites.google.com/view/berkeley-cs294-158-sp24/home)
+
+[cs video courses](https://github.com/Developer-Y/cs-video-courses)
+
+# CS294-158-SP24
+# Deep Unsupervised Learning 
+# Spring 2024
+
+About: This course will cover two areas of deep learning in which labeled data is not required: Deep Generative Models and Self-Supervised Learning.  Recent advances in generative models have made it possible to realistically model high-dimensional raw data such as natural images, audio waveforms and text corpora.  Strides in self-supervised learning have started to close the gap between supervised representation learning and unsupervised representation learning in terms of fine-tuning to unseen tasks.  This course will cover the theoretical foundations of these topics as well as their newly enabled applications.  
+
+If you want to peek ahead, this semester's offering will be fairly similar to [the previous offering](https://sites.google.com/view/berkeley-cs294-158-sp20/home).
+
+Instructors: [Pieter Abbeel](https://people.eecs.berkeley.edu/~pabbeel/), [Wilson Yan](https://wilson1yan.github.io/), [Kevin Frans](https://kvfrans.com/), [Philipp Wu](https://wuphilipp.github.io/)
+
+![](https://lh4.googleusercontent.com/POMh-ulK0e4LWKRU5QECnNv6cISv6DTfuSlPC-dR8OAa7i8Nb6U-Cu1tqq2Lfex4vOfH5iuBOu48m3J4C96MJFgPJfpXq3IUl0uOYNibmAn-sD4t_bDH9AFfTPWOeM-xZw=w1280)
+
+Communication:
+
+primary:  [https://edstem.org/us/courses/53933/discussion/](https://edstem.org/us/courses/53933/discussion/) 
+
+as needed: cs294-158-staff@lists.berkeley.edu
+
+Lectures:  Thursdays 2-5pm (first lecture on 1/18) in 250 Sutardja Dai Hall
+
+Prerequisites: significant experience with probability, optimization, deep learning 
+
+## [Office Hours](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_FN3V_CJ7K346)
+
+For homework, TA office hours are the best venue.  For other questions (lecture, final project, research, etc.) any office hours should be great fits.
+
+Pieter: Thursdays 5-6pm (250 Sutardja Dai Hall)
+
+Wilson: Wednesdays 10-11am (Soda Alcove 326)
+
+Kevin:  Mondays 10-11am (BWW 1st floor, on the far east side of the building where the white tables are)
+
+Philipp: Tuesdays 10-11am (BWW 1st floor, on the far east side of the building where the white tables are)
+
+## [Homework](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_UZxScd08uVh-)
+
+Homework (subject to change)
+
+[Homework policy here](https://sites.google.com/view/berkeley-cs294-158-sp24/home/homework-policy)
+
+[HW1: Autoregressive Models](https://github.com/rll/deepul/tree/master/homeworks/hw1) (out 1/25, due 2/7) 
+
+[HW2: Latent Variable Models](https://github.com/rll/deepul/tree/master/homeworks/hw2) (out 2/8, due 2/21)
+
+[HW3: GANs / Implicit Models](https://github.com/rll/deepul/tree/master/homeworks/hw3) (out 2/22, due 3/6)
+
+[HW4: Diffusion Models](https://github.com/rll/deepul/blob/master/homeworks/hw4) (out 3/7, due 3/20)
+
+
+## [Midterm](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_J6OuvE0GML3l)
+
+[Study handout](https://drive.google.com/file/d/1ndSEcewejWOgKSnaShkSXdPv1WwgBiXG/view?usp=drive_link)
+
+During lecture slot on 4/11
+
+## [Final Project](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_6GrBeqbDNDqC)
+
+[See final project page for details.](https://sites.google.com/view/berkeley-cs294-158-sp24/home/final-project)
+
+Main dates:  
+February 28 Project Proposals  
+March 8 Approved Project Proposals  
+April 5 3-page Milestone  
+May 10  Report and Video Presentation 
+
+## [Grading](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_BqB2MwHWNIKa)
+
+Grading
+
+60% Homework (15% each homework)
+
+10% Midterm
+
+30% Final Project
+
+[Letter grade breakdown](https://sites.google.com/view/berkeley-cs294-158-sp24/home/grading)
+
+## [Tentative Schedule / Syllabus](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_0x8gJbwhqwC0)
+
+Tentative Schedule / Syllabus
+
+### [1](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_muBUMUNTuI2-)
+
+[[pdf](https://drive.google.com/file/d/1j0BCV2ye9feD_u-rya5yhIE72p8mqbFc/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1JpO2Mp_-ejiQiq6fa_hE2HaXC5fwDD9BQ4O7B7kKBgc/edit?usp=drive_link), [youtube](https://youtu.be/tFR6Likf4VI)\] L1 (1/18) Intro 
+
+### [2](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_oJs3vkl2ulkZ)
+
+[[pdf](https://drive.google.com/file/d/10nR2_g1x2kUMnpwmCm1bF9WUpoYe92fX/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1zClS2mdwvYrCpG46JPSFE__v0cZPH9MS4PenOpgAgGc/edit?usp=drive_link), [youtube](https://youtu.be/2ojJUSMf-_g)\] L2 (1/25) Autoregressive Models
+
+### [3](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_E-C2dsllTu6x)
+
+[[pdf](https://drive.google.com/file/d/1B9LT-AzVGx2GLMNdEgZuLCajqKM9kDE6/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1M0rnRuLovp0RBJu6D1SPu7Ef1UzHD9lHVCMB4yWcJSE/edit), [youtube](https://youtu.be/SkSDCzz41Vs)\] L3 (2/1) Flow Models
+
+### [4](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p__Ck5nk-yTzXc)
+
+[[pdf](https://drive.google.com/file/d/1yt2oIqUL4aXUKBX1en7VaYRcN-ZjMwtD/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1FkkhH86URDzAzjNPdCvupV6kqoBNNarVQQgB6ppZlx4/edit?usp=drive_link), [youtube](https://youtu.be/NlIqjtbjjRE)\] L4 (2/8) Latent Variable Models
+
+### [5](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_nC0RvQUKT1WP)
+
+[[pdf](https://drive.google.com/file/d/1yTNsk6swCp1pnuFVCarNPbuGmfOan_dN/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1xkyKsKFeYqtsiAbrvLOsDFn3YE2Q5XHZ5SzOWZSC3D4/edit?usp=drive_link), [youtube](https://youtu.be/lFAHPJS2HHc)\] L5 (2/15) Generative Adversarial Networks / Implicit Models
+
+### [6](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_BRYNU5VMUfOV)
+
+[[pdf](https://drive.google.com/file/d/1JfY5gh8VmUksB4AT2qKg_C0roMtLieGA/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/18Tkjp6sExgbLF2Fz7PW9gMbUxHrybFY5pEJkhiraLxU/edit#slide=id.g268c566cf04_1_0), [youtube](https://youtu.be/DsEDMjdxOv4)\] L6 (2/22) Diffusion Models
+
+### [7](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_tXb13DFNU_Hn)
+
+[[pdf](https://drive.google.com/file/d/1EwLaYmlTB0GbjviVUAmek3JPBWCQ00ZO/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1pf-d_Jm5hC7Tz_o4MpGXHib_bg25kgQD4N7ySmMSgrI/edit#slide=id.g2bcf708674c_0_0), [youtube](https://youtu.be/s6xh6oKq1C0)\] L7 (2/29) Self-Supervised Learning / Non-Generative Representation Learning
+
+### [8](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_btBDIuAvVGCe)
+
+[[pdf](https://drive.google.com/file/d/13YWiY4LLv_qshkSglpDh2VRnAbBHB6SX/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/159QkgLXIuodXz5f0SC6mQ_4CtxdZ2b13/edit?usp=drive_link&ouid=102146201918863623238&rtpof=true&sd=true), [youtube](https://youtu.be/tCgX48cvuw4)\] L8 (3/7) Large Language Models -- guest lecture by Hao Liu
+
+### [9](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_p8Z7QTTnVXv-)
+
+[[pdf](https://drive.google.com/file/d/1BAzSSzQQgodN6UJjRemvkAKq-Kpx1FzY/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1bR_LDG9FUjYue59Y-YoRUnJRdTQJpSHz1FiFA8DaF8I/edit?usp=drive_link), [youtube](https://youtu.be/8ibaG_DPly8)\] L9 (3/14) Video Generation
+
+### [10](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_rwKgtJFLVeAi)
+
+[[pdf](https://drive.google.com/file/d/11EWOcC46okx8sAk1yXg5hV-FEoporBaN/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1ujSqOwTibOcs5_YLhNqfVvXbn6LL1n0EHG7VgyLpr8Y/edit?usp=drive_link), [youtube](https://youtu.be/HTtN7rO-jBI)\] L10 (3/21) Semi-Supervised Learning and Unsupervised Distribution Alignment
+
+<<week of 3/25-29, no lecture per Spring Break>>
+
+### [11](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.iryijgw8a6t1)
+
+[[pdf](https://drive.google.com/file/d/11r701QYxwpydPzdlyIu6OCNH7cPyi9_W/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1GfSO2Kydu42UuJO5Aee0Bd-yfgr2y8sHoX6yGJFWDOE/edit?usp=drive_link), [youtube](https://youtu.be/pPyOlGvWoXA)\] L11 (4/4) Compression (note the youtube is from a previous offering per a major glitch in the 2024 recording)
+
+### [12](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.807rxadayqqa)
+
+[[pdf](https://drive.google.com/file/d/1GFL3XMB96EZs5Yg0tbQal8ZEyqHQ58hp/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1N0FOzV23IHCGZ6q6dBB2G_tq_Z-QWZTVGLAK-K7SbwY/edit?usp=drive_link), [youtube](https://youtu.be/A36T-MPihTo)\] L12a (4/11) Multimodal Models
+
+### [13](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.vgpm7xj2i9x)
+
+[[pdf](https://drive.google.com/file/d/1GFL3XMB96EZs5Yg0tbQal8ZEyqHQ58hp/view?usp=drive_link), [gslides](https://docs.google.com/presentation/d/1N0FOzV23IHCGZ6q6dBB2G_tq_Z-QWZTVGLAK-K7SbwY/edit?usp=drive_link), [youtube](https://youtu.be/Hr2FWHBuNXs)\] L12b (4/11) Parallelization
+
+### [14](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.d4fmxhhuxkug)
+
+[[pdf](https://drive.google.com/file/d/1LQqqWb1ZYc1FmpG6yirrhtKc0w-jmMQC/view?usp=drive_link), [youtube](https://youtu.be/4dyf_SALtxM)\] L13a (4/18) AI for Science \-- Guest Instructor John Ingraham
+
+### [15](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.1tgg0sh50nux)
+
+[[pdf](https://drive.google.com/file/d/10jLu-6zm5VLM1nT1E2VlzLvtK1c7bYb9/view?usp=drive_link), [youtube](https://youtu.be/Z96YMktT_T4)\] L13b (4/18) Neural Radiance Fields -- Guest Instructor Ben Mildenhall
+
+<<week of 4/22-26, no lecture this week>>
+
+<<week of 4/29-5/3, no lecture per RRR week>>
+
+### [16](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_EwtGGOKHxTbC)
+
+(5/10) Final Project Reports and Final Project Video Presentations due
+
+## [FAQ](https://sites.google.com/view/berkeley-cs294-158-sp24/home#h.p_Kj00Bg4Mt79A)
+
+FAQ
+
+Q: How do I get into this course?
+
+A: We'll simply follow however the system is set up by the dept/university and let it do its thing 
+
+Q: Can undergraduates take this course?
+
+A: This course is targeted towards a PhD level audience.  But certainly exceptional undergraduates could be good fits, too.  
+
+Q: Is this a real course or a seminar?
+
+A: This is a real course.  Instructors will give most of the lectures.  There will be substantial homework. There will be a midterm.  There will be a substantial final project.
+
+Q: I already want to start learning now, what can I do?
+
+A: You could take a look at the previous offering: https://sites.google.com/view/berkeley-cs294-158-sp20/home

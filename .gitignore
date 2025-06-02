@@ -1,3 +1,6 @@
 *.pyc
 *.bkp
 *.dtmp
+Scrape/
+*.pkl
+25*.md

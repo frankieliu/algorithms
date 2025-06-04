@@ -22,7 +22,7 @@ Key take away, transform the
 \text{Pr}(y^* \in \mathcal{Y}^* | x^*) = \sum_{a^* \in \mathcal{B}^{-1}(y^*)} \text{Pr}(a^* | x^*)
 \]
 
-Network will model a distrubution over *alignment* space.
+Network will model a distribution over *alignment* space.
 
 ## notation
 

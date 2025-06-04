@@ -1,0 +1,1 @@
+alter table `jobs_2025_06_02_265000` add comment varchar;

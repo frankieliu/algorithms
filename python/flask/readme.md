@@ -1,0 +1,1 @@
+[global variables](https://stackoverflow.com/questions/70681140/is-it-safe-to-use-global-variables-in-flask)

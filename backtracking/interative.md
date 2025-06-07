@@ -1,0 +1,1 @@
+[iterative](https://justinparrtech.com/JustinParr-Tech/non-recursive-algorithm-for-enumerating-permutations/)

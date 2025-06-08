@@ -82,5 +82,6 @@ X = X.to(device)
 pred = model1(X)
 print(f"pred: {pred.argmax(1).item()}, actual: {y}")
 # %%
-type(test_data[:][1])
+import matplotlib.pyplot as plt
+plt.imshow(X[0],cmap="gray")
 # %%

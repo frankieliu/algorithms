@@ -1,0 +1,1 @@
+[async](https://stackoverflow.com/questions/74221048/how-await-in-async-is-differ-from-normal-execution-in-python)

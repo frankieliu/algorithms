@@ -5,3 +5,7 @@ Scrape/
 *.pkl
 25*.md
 python/Data/apple.db-journal
+*-idx1-ubyte
+*-idx3-ubyte
+*-idx1-ubyte.gz
+*-idx3-ubyte.gz

@@ -9,3 +9,4 @@ python/Data/apple.db-journal
 *-idx3-ubyte
 *-idx1-ubyte.gz
 *-idx3-ubyte.gz
+*/model.pth

@@ -68,18 +68,3 @@ for i in range(epochs):
     print(f"Epoch {i+1}")
     train(train_loader, loss_fn, optimizer)
     test(test_loader, loss_fn)
-
-# %%
-torch.save(model.state_dict(), "model.pth")
-model1 = NN().to(device)
-model1.load_state_dict(torch.load("model.pth"))
-# %%
-model1.eval()
-X, y = test_data[0]
-X = X.to(device)
-pred = model1(X)
-print(f"pred: {pred.argmax(1).item()}, actual: {y}")
-# %%
-import matplotlib.pyplot as plt
-plt.imshow(X[0],cmap="gray")
-# %%

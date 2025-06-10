@@ -1,7 +1,7 @@
 from unittest import TestCase
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
-from dec import DecisionTreeClassifier
+from dec1 import DecisionTreeClassifier
 
 class TestMyCase(TestCase):
     def test_my_feature(self):
@@ -17,5 +17,8 @@ class TestMyCase(TestCase):
         clf.fit(X_train, y_train)
 
         # Predict
-        predictions = clf.predict(X_test)
-        print("Predictions:", predictions)
+        pred = clf.predict(X_test)
+        print("Predictions:", pred)
+        print("Actual:", y_test)
+        print("Diff:", abs(y_test - pred))
+        self.assertLessEqual(sum(abs(y_test-pred)), 1)

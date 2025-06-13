@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 from torch import nn
 from torchvision import datasets
 from torchvision.transforms import ToTensor
+import matplotlib.pyplot as plt
 # %%
 train_data = datasets.FashionMNIST(
     root = "data",
@@ -77,5 +78,4 @@ x,y = test_data[0]
 pred = model1(x)
 print(f"Pred: {pred.argmax(1).item()}  Actual: {y}")
 # %%
-import matplotlib.pyplot as plt
 plt.imshow(x[0], cmap="gray")

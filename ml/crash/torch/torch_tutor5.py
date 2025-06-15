@@ -1,24 +1,27 @@
 # %%
 import torch
-from torch import nn
 from torch.utils.data import DataLoader
+from torch import nn
 from torchvision import datasets
 from torchvision.transforms import ToTensor
+import matplotlib.pyplot as plt
 # %%
 train_data = datasets.FashionMNIST(
     root = "data",
     train = True,
     download = True,
-    transform = ToTensor())
+    transform = ToTensor()
+)
 test_data = datasets.FashionMNIST(
     root = "data",
     train = False,
     download = True,
-    transform = ToTensor())
+    transform = ToTensor()
+)
 # %%
-batch_size = 64
-train_loader = DataLoader(train_data, batch_size = batch_size)
-test_loader = DataLoader(test_data, batch_size = batch_size)
+bs = 64
+train_loader = DataLoader(train_data, batch_size = bs)
+test_loader = DataLoader(test_data, batch_size = bs)
 # %%
 class NN(nn.Module):
     def __init__(self):
@@ -38,13 +41,12 @@ class NN(nn.Module):
 device = "cpu"
 model = NN().to(device)
 loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr = 1e-3)
-
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 # %%
 def train(data_loader, loss_fn, optimizer):
-    model.train()
-    for i, (X,y) in enumerate(data_loader):
-        X, y = X.to(device), y.to(device)
+    model.train() 
+    for i,(X,y) in enumerate(data_loader):
+        X,y = X.to(device), y.to(device)
         pred = model(X)
         loss = loss_fn(pred, y)
         loss.backward()
@@ -52,12 +54,11 @@ def train(data_loader, loss_fn, optimizer):
         optimizer.zero_grad()
         if i % 100 == 0:
             print(f"Loss: {loss.item()} [{i}/{len(data_loader)}]")
-
 def test(data_loader, loss_fn):
-    model.eval()
-    loss, correct = 0, 0
-    for i, (X,y) in enumerate(data_loader):
-        X,y = X.to(device),y.to(device)
+    model.eval() 
+    loss, correct = 0,0
+    for i,(X,y) in enumerate(data_loader):
+        X,y = X.to(device), y.to(device)
         pred = model(X)
         loss += loss_fn(pred, y).item()
         correct += (pred.argmax(1) == y).type(torch.float).sum().item()
@@ -65,21 +66,16 @@ def test(data_loader, loss_fn):
 # %%
 epochs = 5
 for i in range(epochs):
-    print(f"Epoch {i+1}")
+    print(f"Epoch: {i+1}")
     train(train_loader, loss_fn, optimizer)
     test(test_loader, loss_fn)
-
 # %%
 torch.save(model.state_dict(), "model.pth")
 model1 = NN().to(device)
 model1.load_state_dict(torch.load("model.pth"))
 # %%
-model1.eval()
-X, y = test_data[0]
-X = X.to(device)
-pred = model1(X)
-print(f"pred: {pred.argmax(1).item()}, actual: {y}")
+x,y = test_data[0]
+pred = model1(x)
+print(f"Pred: {pred.argmax(1).item()}  Actual: {y}")
 # %%
-import matplotlib.pyplot as plt
-plt.imshow(X[0],cmap="gray")
-# %%
+plt.imshow(x[0], cmap="gray")

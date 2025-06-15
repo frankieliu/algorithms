@@ -128,7 +128,6 @@ class MultiHeadAttention(nn.Module):
         output.transpose(1,2).contiguous().view(b,s,-1)
         return self.o_proj(output)
 
-
 class Rope(nn.Module):
     def __init__(self, slen, dim):
         super().__init()
@@ -189,9 +188,17 @@ class MoE(nn.Module):
         # BSE -> BSK
         # for each b,s : [3, 6, 7]
         #                [0.3, 0.2, 0.5]
+        #
+        # values, indices = topk(input, k, dim) 
+        # values: input (b,s,e) : output (b,s,k)
+        #         => dim will shrink to k
+        # indices: input (b,s,e) : output (b,s,k)!
+        #         => for each k will give index of its location in the original tensor
+        #         => for each b,s give k indices 
         topk_probs, topk_indices = torch.topk(g_probs, self.top_k, dim=-1)
         topk_probs = topk_probs / topk_probs.sum(dim=-1, keepdim=True)
 
+        # output will be size of x (b,s,d)
         output = torch.zeros_like(x)
 
         for i in range(self.num_experts):
@@ -201,7 +208,7 @@ class MoE(nn.Module):
             # e.g. there may be 10 experts,
             # and for k=3, only three of the
             # experts will be choosen 
-            expert_mask = (topk_indices == i).any(dim=-1)
+            expert_mask = (topk_indices == i).any(dim=-1)  # size b,s
             if expert_mask.sum() == 0:
                 # expert isn't used anywhere
                 continue 
@@ -209,11 +216,10 @@ class MoE(nn.Module):
             # choose a subset of x where b,s is True
             # x : BSD
             # x[mask] : bsD  (Here small b and s represents the subset)
-            expert_input = x[expert_mask]
+            expert_input = x[expert_mask]    # sb,ss,d  (subset of b,s where this expert acts)
 
-            # all the experts are equivalent
-
-            expert_output = self.experts[i](expert_input)
+            # output from each expert
+            expert_output = self.experts[i](expert_input)  # sb,ss,d
 
             # sum contribution
             for k in range(self.top_k):
@@ -234,14 +240,262 @@ class MoE(nn.Module):
                 # bsk
                 # where the size of bs is given by the expert_mask
                 # also pick the probabity for the same
-                # 
-                # only add the expert output
-                # seems it might be easier to generate
-                # bs for the probability
-                # i = 6
-                # topk_indices[e
                 output[expert_mask] += (
-                    (topk_indices[expert_mask] == i)[...,k].float().unsqeeze(-1) *
+                    (topk_indices[expert_mask] == i)[...,k].float().unsqueeze(-1) *
                     topk_probs[expert_mask][..., k].unsqueeze(-1) * expert_output
                 )
-                 
+                # for k in range(self.k):
+                #   topk_indices[expert_mask] == i 
+                #   b,s: [ 3 4 9 ] == 9
+                #   b,s: [ False False True ]
+                #   [..., k] -> pick the kth one
+                #   unsqueeze: b,s -> b,s,1
+                #   topk_probs[expert_mask][...,k] -> pick the kth one
+                #  
+                # This basically says for each expert i:
+                # if it matches the topk expert index then it will be added:
+                # 
+                # As in the example above
+                # b,s: [ 3 4 9 ], we will be checking against all possible expert index
+                # that might overlap with one of the topk_indices, if it does then
+                # use topk_values b,s: [ 0.2 0.1 0.7 ]
+                #   
+                # expert_output  sb,ss,d
+        return output    
+    
+class EncoderLayer(nn.Module):
+    def __init__(self, d_model, num_heads, d_ff, num_experts, top_k):
+        super().__init__()
+        self.self_attn = MultiHeadAttention(d_model, num_heads)
+        self.moe = MoE(d_model, d_ff, num_experts, top_k)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm1 = nn.LayerNorm(d_model)
+    def forward(self, x, mask=None):
+        attn_output = self.self_attn(x, mask)
+        x = self.norm1(x + attn_output)
+        moe_output = self.moe(x)
+        return self.norm2(x + moe_output)
+
+""" Not optimized """
+
+class DeepSeekMoe(nn.Module):
+    def moe(self, x, topk_indices, topk_weights, num_experts):
+        """
+        topk_indices |= b*s_i : [e_idx1, e_idx2, e_idx3]
+        topk_weights |= b*s_i : [e_wgt1, e_wgt2, e_wgt3]               
+        
+        Note: that b*s is for all tokens (batch * sequence)
+        For each you get 2*k number:
+        - k numbers for the index of the topk experts
+        - k numbers for the weights for each of the topk experts
+        """
+        
+        # x   |=  b*s,d
+        # ind |=  b*s,k
+        # expert_mask (line 1) |= b*s,k,e (one-hot)
+        # expert_mask (line 2) |= e,b*s,k
+        # e
+        #   b*s
+        #       [1 0 0] -> this means expert e, for token b*s, is the topk #1
+        # e
+        #   b*s
+        #       [0 0 0] -> this will NOT show up because topk_indices already
+        #                  filters b*s, i.e. so one of these slots will be 
+        #                  filled by some expert
+        expert_mask = torch.nn.functional.one_hot(topk_indices, num_classes=num_experts) 
+        expert_mask = expert_mask.permute(2,0,1)
+        """
+        export_mask is ordered by:
+        - each expert
+        
+        Some experts will be empty:
+        - one-hot encoding guarantees that each expert receives
+        receives for all b*s, [[one-hot] [one-hot] [one-hot]]  (line 1, k=3)
+        
+        - after transpose (line 2, k=3)
+        for each expert
+         for each b*s token
+          [True, False, False]  
+
+          ...[Falee, False, False]  - happens often if using 0 experts out of many
+          - this makes one-hot encoding inefficient 
+        """
+
+        final = torch.zeros_like(x)
+        for expert_idx in range(num_experts):
+
+            # pick out info a particular expert idx 
+            mask = expert_mask[expert_idx]    # b*s,k
+
+            # where returns a tuple of dim1, dim2, ..., dim where 
+            # tensor is true
+            token_indices, weight_indices = torch.where(mask)
+
+            # length of token_indices corresponds which b*s are True
+            if token_indices.numel() > 0:
+
+                # topk_weights: b*s,k
+                # token_indices picks out the rows (b*s) for a particular
+                # expert, and weight_indices picks out which of the
+                # topk experts it belongs to
+                expert_weights = topk_weights[token_indices, weight_indices]
+                # b*s, d -> filter(b*s),d
+                expert_input = x[token_indices]
+                expert_output = self.expert[expert_idx](expert_input)
+                
+                # unqueeze is necessary for broadcasting
+                # - expert output should be filterd(b*s),d
+                # - expert>weights is filtered(b*s)
+                #   - unsqueeze to filtered(b*s),1
+                weighted_output = expert_output * expert_weights.unsqueeze(-1)
+
+                # Note:
+                # final[token_indices] += weighted_output
+                # - each filtered(b*s) has contribution from only one expert
+                # 
+                # .index_add_ is good if you have token_indices
+                # - has repeat indices
+                final.index_add_(0, token_indices, weighted_output)
+
+""" DeepseekV3 has a different type of router"""
+class DeepseekV3TopkRouter(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        self.top_k = config.num_experts_per_tok
+        self.n_routed_experts = config.n_routed_experts
+        self.routed_scaling_factor = config.routed_scaling_factor
+        self.n_group = config.n_group
+        self.topk_group = config.topk_group
+        self.norm_topk_prob = config.norm_topk_prob
+        self.weight = nn.Parameter(torch.empty((self.n_routed_experts, config.hidden_size)))
+        self.register_buffer("e_score_correction_bias", torch.zeros((self.n_routed_experts)))
+
+    @torch.no_grad()
+    def get_topk_indices(self, scores):
+        """
+
+        This introduces the concept of a group of experts
+        - the sum of the scores in an expert group
+        - determine which of the groups will be chosen
+        - all other groups' score are set to zero
+
+        """
+        # scores: b*s,e
+        scores_for_choice = scores.view(-1, self.n_routed_experts) + self.e_score_correction_bias.unsqueeze(0)
+
+        # grouping experts together
+        # say n_group == 20 and n_routed_experts == 100
+        # then you would have b*s, 100 -> b*s, 20, 5
+        # then find the topk and sum   -> b*s, 20
+        group_scores = (
+            scores_for_choice.view(-1, self.n_group, self.n_routed_experts // self.n_group)
+            .topk(2, dim=-1)[0]
+            .sum(dim=-1)
+        )
+        # find the topk groups
+        # group_idx: index in dim for the topk_group
+        group_idx = torch.topk(group_scores, k=self.topk_group, dim=-1, sorted=False)[1]
+        group_mask = torch.zeros_like(group_scores)
+        # group_scores: b*s, n_group
+        # group_mask:   b*s, n_group
+        # put a 1 for the topk_group
+        group_mask.scatter_(1, group_idx, 1)
+
+        # expand the mask to all 5 experts
+        # b*s: [1 0 0 1 0 0 0...0]  # 20 groups (topk_group = 2)
+        # step 1: [[1] [0] [0] [1] [0] ... ]  # unsqueeze
+        # step 2: [[1 1 1 1 1] [0 0 0 0 0] [0 0 0 0 0] [1 1 1 1 1] ... ]  # expand
+        score_mask = (
+            group_mask.unsqueeze(-1)
+            .expand(-1, self.n_group, self.n_routed_experts // self.n_group)
+            .reshape(-1, self.n_routed_experts)
+        )
+
+        # Zero out the scores for groups that were not chosen
+        scores_for_choice = scores_for_choice.masked_fill(~score_mask.bool(), 0.0)
+        
+        # The "normal" topk from the scores
+        topk_indices = torch.topk(scores_for_choice, k=self.top_k, dim=-1, sorted=False)[1]
+        return topk_indices
+
+    def forward(self, hidden_states):
+        # flatten to b*s,d
+        hidden_states = hidden_states.view(-1, self.config.hidden_size)
+        # b*s,d e,d
+        # torch.nn.functional.linear() 
+        router_logits = F.linear(hidden_states.type(torch.float32), self.weight.type(torch.float32))
+
+        scores = router_logits.sigmoid()
+        topk_indices = self.get_topk_indices(scores)
+        topk_weights = scores.gather(1, topk_indices)
+        if self.norm_topk_prob:
+            denominator = topk_weights.sum(dim=-1, keepdim=True) + 1e-20
+            topk_weights /= denominator
+        topk_weights = topk_weights * self.routed_scaling_factor
+        return topk_indices, topk_weights
+
+class OlmoeSparseMoeBlock(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.num_experts = config.num_experts
+        self.top_k = config.num_experts_per_tok
+        self.norm_topk_prob = config.norm_topk_prob
+        self.gate = nn.Linear(config.hidden_size, self.num_experts, bias=False)
+        self.experts = nn.ModuleList([OlmoeMLP(config) for _ in range(self.num_experts)])
+
+    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
+        batch_size, sequence_length, hidden_dim = hidden_states.shape
+        # Flatten b*s,d
+        hidden_states = hidden_states.view(-1, hidden_dim)
+        # router_logits: (batch * sequence_length, n_experts)
+        router_logits = self.gate(hidden_states)
+
+        routing_weights = F.softmax(router_logits, dim=1, dtype=torch.float)
+        routing_weights, selected_experts = torch.topk(routing_weights, self.top_k, dim=-1)
+        # takes the softmax and then normalizes for the ones in the topk
+        if self.norm_topk_prob:
+            routing_weights /= routing_weights.sum(dim=-1, keepdim=True)
+        # we cast back to the input dtype
+        routing_weights = routing_weights.to(hidden_states.dtype)
+
+        final_hidden_states = torch.zeros(
+            (batch_size * sequence_length, hidden_dim), dtype=hidden_states.dtype, device=hidden_states.device
+        )
+
+        # One hot encode the selected experts to create an expert mask
+        # this will be used to easily index which expert is going to be selected
+        # selected_experts : b*s,k 
+        # expert_mask: b*s,k -> b*s,k,e -> e,k,b*s  *** here the permute is (2,1,0) ***
+        # This is different than DeepSeek's  e,b*s,k
+        expert_mask = torch.nn.functional.one_hot(selected_experts, num_classes=self.num_experts).permute(2, 1, 0)
+
+        # Loop over all available experts in the model and perform the computation on each expert
+        for expert_idx in range(self.num_experts):
+            expert_layer = self.experts[expert_idx]
+            # expert_mask[expert_idx] = b*s,k
+            # you get 
+            # idx:   which of the k experts
+            # top_x: which of the b*s
+            idx, top_x = torch.where(expert_mask[expert_idx])
+
+            # Seems simpler to:
+            #  current_state = hidden_states[top_x]
+            #  current_hidden_states = expert_layer(current_state) * routing_weights[topx, idx, None]
+            #
+            # Index the correct hidden states and compute the expert hidden state for
+            # the current expert. We need to make sure to multiply the output hidden
+            # states by `routing_weights` on the corresponding tokens (top-1 and top-2)
+            current_state = hidden_states[None, top_x].reshape(-1, hidden_dim)
+            current_hidden_states = expert_layer(current_state) * routing_weights[top_x, idx, None]
+
+            # First argument to index_add_ is the dimension
+            # So selecting dim=0 b*s dimension
+            # for the b*s in top_x
+            # current_hidden_state : subset(b*s), d
+            #
+            # However `index_add_` only support torch tensors for indexing so we'll use
+            # the `top_x` tensor here.
+            final_hidden_states.index_add_(0, top_x, current_hidden_states.to(hidden_states.dtype))
+        final_hidden_states = final_hidden_states.reshape(batch_size, sequence_length, hidden_dim)
+        return final_hidden_states, router_logits

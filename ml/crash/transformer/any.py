@@ -199,3 +199,28 @@ print(f"Original size: {x.size()}")
 y = x.expand(2, 4, 3)
 print(f"Expanded tensor:\n {y}")
 print(f"Expanded size: {y.size()}")
+#%%
+x = torch.tensor([1, 2, 3])
+print(x.size())
+
+y = x.repeat(4, 2)
+print(y)
+# Output:
+# tensor([[1, 2, 3, 1, 2, 3],
+#         [1, 2, 3, 1, 2, 3],
+#         [1, 2, 3, 1, 2, 3],
+#         [1, 2, 3, 1, 2, 3]])
+
+print(y.size())
+# Output:
+# torch.Size([4, 6])
+
+z = x.repeat(4, 3, 2, 1)
+print(z)
+print(z.size())
+# Output:
+# torch.Size([4, 3, 2, 3])
+
+k = y.repeat(2,1)
+print(k)
+print(y.size(), k.size())

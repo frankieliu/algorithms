@@ -110,7 +110,7 @@ print(input_tensor)
 import torch
 
 # Create a 3D tensor
-src = torch.arange(1, 28).reshape(3, 3, 3) 
+src = torch.arange(1, 37).reshape(3, 4, 3).type(torch.float)
 # tensor([[[ 1,  2,  3],
 #          [ 4,  5,  6],
 #          [ 7,  8,  9]],
@@ -128,22 +128,27 @@ src = torch.arange(1, 28).reshape(3, 3, 3)
 # The values in index specify the target indices in the specified dimension
 index = torch.tensor([[[0, 1, 0],
                        [2, 0, 1],
-                       [1, 2, 2]],
+                       [1, 2, 2],
+                       [0, 0, 0]
+                       ],
 
                       [[1, 0, 2],
                        [0, 2, 1],
-                       [2, 1, 0]],
+                       [2, 1, 0],
+                       [1, 1, 1]],
 
                       [[2, 2, 1],
                        [1, 0, 0],
-                       [0, 1, 2]]])
+                       [0, 1, 2],
+                       [0, 0, 0]]])
 # The index values must be within the bounds of the target dimension size
 # In this case, the second dimension has a size of 3, so indices can be 0, 1, or 2
 
 # Create a destination tensor to scatter into
-# The destination tensor should have the same shape as src, but the size of the scattered dimension can differ
+# The destination tensor should have the same shape as src,
+# but the size of the scattered dimension can differ
 # Here, we keep the same shape for simplicity
-out = torch.zeros_like(src)
+out = torch.zeros(3,5,3)
 
 # Scatter values from src into out based on index along dim=1
 # The scatter_ operation performs an in-place scatter
@@ -156,6 +161,9 @@ print(index)
 print("\nOutput tensor (out) after scatter along dim=1:")
 print(out)
 
+"""
+in the case above the src ==
+"""
 
 #%%
 # Example tensor

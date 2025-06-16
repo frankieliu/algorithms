@@ -499,3 +499,41 @@ class OlmoeSparseMoeBlock(nn.Module):
             final_hidden_states.index_add_(0, top_x, current_hidden_states.to(hidden_states.dtype))
         final_hidden_states = final_hidden_states.reshape(batch_size, sequence_length, hidden_dim)
         return final_hidden_states, router_logits
+
+@use_kernel_forward_from_hub("Llama4TextMoe")
+class Llama4TextMoe(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.top_k = config.num_experts_per_tok
+        self.hidden_dim = config.hidden_size
+        self.num_experts = config.num_local_experts
+        self.experts = Llama4TextExperts(config)
+
+        # this much simpler, set bias=False
+        self.router = nn.Linear(config.hidden_size, config.num_local_experts, bias=False)
+        self.shared_expert = Llama4TextMLP(config)
+
+    def forward(self, hidden_states):
+        hidden_states = hidden_states.reshape(-1, self.hidden_dim)
+        router_logits = self.router(hidden_states)
+        router_top_value, router_indices = torch.topk(router_logits, self.top_k, dim=1)
+
+        # router_logits:     b*s,e
+        # scatter on e (dim = 1)
+        # router_indices:    b*s,k
+        # router_top_value:  b*s,k 
+        # router_scores:     b*s,e
+        # - every where -inf, except at router_indices,  
+        router_scores = (
+            torch.full_like(router_logits, float("-inf")).scatter_(1, router_indices, router_top_value).transpose(0, 1)
+        )
+        router_scores = torch.sigmoid(router_scores.float()).to(hidden_states.dtype)
+
+        routed_in = hidden_states.repeat(self.num_experts, 1)
+        routed_in = routed_in * router_scores.reshape(-1, 1)
+        routed_out = self.experts(routed_in)
+
+        out = self.shared_expert(hidden_states)
+        out.add_(routed_out.reshape(self.num_experts, -1, self.hidden_dim).sum(dim=0))
+
+        return out, router_scores

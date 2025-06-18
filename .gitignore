@@ -10,4 +10,10 @@ python/Data/apple.db-journal
 *-idx1-ubyte.gz
 *-idx3-ubyte.gz
 */model.pth
-ml/crash/torch/model.pth
+*/model.pth
+apple.db
+apple.db-journal
+apple.sqbpro
+*.swp
+python/work/data/250617_scrape/*
+python/work/data/250602_scrape/*

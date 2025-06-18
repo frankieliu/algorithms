@@ -26,10 +26,10 @@ def main(input_file, output_file, debug=False, exclude=""):
     df.to_pickle(output_file)
 
 if __name__=="__main__":
-
+    date="250617"
     parser = argparse.ArgumentParser(description="Get job ids")
-    parser.add_argument("-i", "--input_file", default="Data/250602.md")
-    parser.add_argument("-o", "--output_file", default="Data/250602_job_number.pkl")
+    parser.add_argument("-i", "--input_file", default=f"../data/{date}.md")
+    parser.add_argument("-o", "--output_file", default=f"../data/{date}_job_number.pkl")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true", default=False)
     parser.add_argument("-e", "--exclude", default=r"manager")
     args = parser.parse_args()

@@ -77,7 +77,6 @@ b = torch.zeros_like(a)
 # b.scatter_() --> will only scatter in one dimension
 # note scatter_ is in place, which scatter is not
 #%%
-import torch
 
 # Create an initial 3D tensor
 input_tensor = torch.zeros(3, 4, 5)
@@ -107,7 +106,6 @@ input_tensor.scatter_(2, index_tensor.unsqueeze(-1), src_tensor.unsqueeze(-1))  
 print("\nTensor after scatter_:")
 print(input_tensor)
 #%%
-import torch
 
 # Create a 3D tensor
 src = torch.arange(1, 37).reshape(3, 4, 3).type(torch.float)

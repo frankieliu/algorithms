@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
-import sqlite3
 from argparse import ArgumentParser
+import sqlite3
 
 def save_to_db(df, dbpath, table_name):
     conn = sqlite3.connect(dbpath)

@@ -28,3 +28,7 @@
 1. `python to_db.py`
    - save to apple.db
    - on new table named `jobs_<date>`
+
+## get parsed information from email sent
+1. `python processed.py`
+1. join on the table

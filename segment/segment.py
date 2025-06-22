@@ -1,54 +1,82 @@
-def build(node, start, end):
-    if start == end:
-        tree[node] = A[start]
-        return 
-    mid = (start + end) // 2
-    build(2*node, start, mid)
-    build(2*node+1, mid+1, end)
-    tree[node] = tree[2*node] + tree[2*node+1]
+class SegmentTree:
+    def __init__(self, a):
+        n = len(a)
+        self.t = [0] * 4 * n
+        self.tl, self.tr = 0, n - 1
+        self.v = 1
+        self.build(a)
 
-def update(node, start, end, idx, val):
-    if start == end:
-        A[idx] += val
-        tree[node] += val
-        return
-    mid = (start + end) // 2
-    # on the left
-    if start <= idx and idx <= mid:
-        update(2*node, start, mid, idx, val)
-    else:
-        update(2*node+1, mid+1, end, idx, val)
-    tree[node] = tree[2*node] + tree[2*node+1]
+    # adding an array to the tree
+    # at root it should be called with
+    # v = 1, tl = 0, tr = n-1
+    def build(self, a, v=1, tl=None, tr=None):
+        if v == 1:
+            tl, tr = self.tl, self.tr
+        if tl == tr:
+            self.t[v] = a[tl]
+        else:
+            tm = (tl + tr) // 2
+            self.build(a, v * 2, tl, tm)
+            self.build(a, v * 2 + 1, tm + 1, tr)
+            self.t[v] = self.t[v * 2] + self.t[v * 2 + 1]
 
-def query(node, start, end, l, r):
-    """
-    start and end are the nodes range
-    l and r are the query ranges
+    def update(self, pos, new_val, v=1, tl=None, tr=None):
+        if v == 1:
+            tl, tr = self.tl, self.tr
+        if tl == tr:
+            self.t[v] = new_val
+        else:
+            tm = (tl + tr) // 2
+            if pos <= tm:
+                self.update(pos, new_val, v * 2, tl, tm)
+            else:
+                self.update(pos, new_val, v * 2 + 1, tm + 1, tr)
+            self.t[v] = self.t[v * 2] + self.t[v * 2 + 1]
 
-    3 conditions:
-    
-    1. inside -> return the node value
-       
-             l         r
-               [     ]
+    def sum(self, ll, r, v=1, tl=None, tr=None):
+        if v == 1:
+            tl, tr = self.tl, self.tr
+        if ll > r:
+            return 0
+        if ll == tl and r == tr:
+            return self.t[v]
+        tm = (tl + tr) // 2
+        p1 = self.sum(ll, min(tm, r), v * 2, tl, tm)
+        p2 = self.sum(max(ll, tm + 1), r, v * 2 + 1, tm + 1, tr)
+        return p1 + p2
 
-    1. partial -> recurse down the tree
+    def query(self, ll, r, v=1, tl=None, tr=None):
+        """
+        start and end are the nodes range
+        l and r are the query ranges
 
-             l         r
-          [     ]
+        3 conditions:
 
-    1. outside -> return 0
-             l         r
-                          [    ]
-    """
-    if r < start or l > end:
-        return 0
-    # completely within l and r
-    if l <= start and end <= r:
-        return tree[node]
+        1. inside -> return the node value
 
-    # partial overlap
-    mid = (start + end) // 2
-    p1 = query(2*node, start, mid, l, r)
-    p2 = query(2*node+1, mid+1, end, l, r)
-    return p1 + p2
+                l         r
+                [     ]
+
+        1. partial -> recurse down the tree
+
+                l         r
+            [     ]
+
+        1. outside -> return 0
+                l         r
+                            [    ]
+        """
+        if v == 1:
+            tl, tr = self.tl, self.tr
+        if r < tl or ll > tr:
+            return 0
+
+        # completely within l and r
+        if ll <= tl and tr <= r:
+            return self.t[v]
+
+        # partial overlap
+        tm = (tl + tr) // 2
+        p1 = self.query(ll, r, v * 2, tl, tm)
+        p2 = self.query(ll, r, v * 2 + 1, tm + 1, tr)
+        return p1 + p2

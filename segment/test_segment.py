@@ -1,6 +1,6 @@
 from unittest import TestCase
 import numpy as np
-from segment3 import SegmentTree
+from segment5 import SegmentTree
 
 class MyTest(TestCase):
     def test_segment(self):

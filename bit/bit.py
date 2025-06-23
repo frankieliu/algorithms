@@ -1,81 +1,37 @@
+class BIT:
+    def __init__(self, size, a=None):
+        if a is not None:
+            self.n = len(a)
+        else:
+            self.n = size
+        self.bit = [0] * (self.n + 1)  # 1-based indexing
+        if a is not None:
+            self.build(a)
 
-"""
-010110 
-101010 (negative of the above)
-    ^  will hit the lowest 1 set
+    # adds the
+    def build(self, a):
+        i = 1
+        while i <= self.n: 
+            self.bit[i] += self.a[i-1]
+            ni = i + (i&-i)
+            if ni <= self.n:
+                self.bit[ni] += self.bit[i]
+            i = ni
 
-r & -r
-0000000000000001
-00000001
-0001    0001    0001
-01  01  01  01  01
-101010101010101010101
+    # update adds delta to i
+    def update(self, i, delta):
+        while i <= self.n:
+            self.bit[i] += delta
+            i += i & -i  # move to parent
 
-2 covers 1-2
-4 covers 1-4
-8 covers 1-8
+    # query gets the prefix sum [1,i]
+    def query(self, i):
+        res = 0
+        while i > 0:
+            res += self.bit[i]
+            i -= i & -i  # move to previous
+        return res
 
-Say I want from sum from 1-10
-10 is written as 2+8
-
-1010 Get bit at d10
-  ^  Subtract r & -r
-^    Get bit at d8
-
-Going the other way:
-
-Want to add at 10 -- this will affect things bigger than it
- 1010 - 10
-
- 1100 - 12
-10000 - 16
-
-how to start with an array:
- first element
- 
-"""
-class Solution:
-    # bit
-    # 1011 & 0101
-    #    0
-    # 10111 & 01001
-    # 10000 
-    # 0 1 2 3 4 5 6 7 8
-    #   1   1   1   1
-    #   2 2     2 2 
-    #   4 4 4 4
-    #   8 8 8 8 8 8 8 8
-    # 1000
-    # should cover from g(8)+1 to 8  g(8) = 0
-    # 0111
-    # should cover from g(7)+1 to 7  g(7) = 110
-    # to get the sum need to sum(g(7)) = sum(6), etc
-    
-    def add(self, b, r, val):
-        lb = len(b)
-        while r <= len(b):
-            b[r] = max(b[r],val)
-            r += (r & -r)
-
-    def fbit(self, b, n):
-        res = -1 
-        while r > 0:
-            res = max(res, b(r))
-            r -= (r & -r)
-
-    def fullbit(b, array):
-        for i in range(1, len(array)+1):
-            b[i] = max(b[i], array[i-1])
-            ni = i + (i & -i)
-            if ni <= len(array):
-                b[ni] = max(b[ni], b[i])
-
-    def findBuildings(self, heights: List[int]) -> List[int]:
-        h = heights[::-1]
-        msf = h[0]
-        res = [0]
-        for i in range(1, len(h)):
-            if h[i] > msf:
-                res.append(i)
-                msf = h[i]
-        return [len(h)-1-x for x in res][::-1]
+    # gets the sum [l,r]
+    def range_query(self, ql, qr):
+        return self.query(qr) - self.query(ql - 1)

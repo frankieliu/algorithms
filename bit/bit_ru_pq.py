@@ -8,9 +8,9 @@ class BIT_RangeUpdate_PointQuery:
             self.bit[i] += delta
             i += i & -i
 
-    def range_add(self, l, r, delta):
-        self._add(l, delta)
-        self._add(r + 1, -delta)
+    def range_add(self, ql, qr, delta):
+        self._add(ql, delta)
+        self._add(qr + 1, -delta)
 
     def point_query(self, i):
         res = 0

@@ -21,14 +21,14 @@ class BIT_RangeUpdate_RangeQuery:
         self.B1 = BIT(size)
         self.B2 = BIT(size)
 
-    def range_add(self, l, r, delta):
-        self.B1.add(l, delta)
-        self.B1.add(r + 1, -delta)
-        self.B2.add(l, delta * (l - 1))
-        self.B2.add(r + 1, -delta * r)
+    def range_add(self, ql, qr, delta):
+        self.B1.add(ql, delta)
+        self.B1.add(qr + 1, -delta)
+        self.B2.add(ql, delta * (ql - 1))
+        self.B2.add(qr + 1, -delta * qr)
 
     def prefix_sum(self, i):
         return self.B1.query(i) * i - self.B2.query(i)
 
-    def range_sum(self, l, r):
-        return self.prefix_sum(r) - self.prefix_sum(l - 1)
+    def range_sum(self, ql, qr):
+        return self.prefix_sum(qr) - self.prefix_sum(ql - 1)

@@ -86,13 +86,13 @@ def main(input_dir, output_file, debug, debug_files=None):
         df.to_pickle(f)
 
 if __name__=="__main__":
+    date = "250617"
+    data_dir = "../data"
     parser = ArgumentParser(description="Reads text files to extract sections")
-    parser.add_argument("-i", "--input_dir", default="Data/Scrape/")
-    parser.add_argument("-o", "--output_file", default="Data/250602_job_description.pkl")
+    parser.add_argument("-i", "--input_dir", default=f"{data_dir}/{date}_scrape/")
+    parser.add_argument("-o", "--output_file", default=f"{data_dir}/{date}_job_description.pkl")
     parser.add_argument("-d", "--debug", action="store_true", default=False)
     parser.add_argument("-f", "--files_to_debug", nargs='*', default=["Data/Scrape/200604244.txt"])
     args = parser.parse_args()
     main(args.input_dir, args.output_file, args.debug,
         debug_files=args.files_to_debug) 
-
-

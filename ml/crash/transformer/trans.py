@@ -523,17 +523,30 @@ class Llama4TextMoe(nn.Module):
         # router_indices:    b*s,k
         # router_top_value:  b*s,k 
         # router_scores:     b*s,e
-        # - every where -inf, except at router_indices,  
+        # - -inf everywhere
+        # for each b*s:
+        # - recover only the top k scores
         router_scores = (
             torch.full_like(router_logits, float("-inf")).scatter_(1, router_indices, router_top_value).transpose(0, 1)
         )
+        # Note: -inf becomes sigmoid(-inf) = 0
         router_scores = torch.sigmoid(router_scores.float()).to(hidden_states.dtype)
 
+        # router_in
+        # b*s,d -> b*s*e, d
         routed_in = hidden_states.repeat(self.num_experts, 1)
+        # b*s*e,d * b*s*e,1 (from reshape)
+        # Note only the enabled/gated states will be retained
         routed_in = routed_in * router_scores.reshape(-1, 1)
+        # apply the experts all at once, here we don't
+        # loop over the experts, we gate the input
         routed_out = self.experts(routed_in)
 
         out = self.shared_expert(hidden_states)
+
+        # reshape:
+        # b*s*e,d
+        # e,b*s,d .sum(dim=0) : sum contributes from the top-k
         out.add_(routed_out.reshape(self.num_experts, -1, self.hidden_dim).sum(dim=0))
 
         return out, router_scores

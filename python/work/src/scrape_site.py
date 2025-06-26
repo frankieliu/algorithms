@@ -21,14 +21,16 @@ def main(input_file, output_dir, debug):
     for val in df.values[:,0]:
         url = f"https://jobs.apple.com/en-us/details/{val}"
         text = re.sub(r'[^\x00-\x7F]+', '', get_url_text(url))
-        out_file = f"{output_dir}{val}.txt"
+        out_file = f"{output_dir}/{val}.txt"
         with open(out_file, "w") as f:
             f.write(text)
 
 if __name__=="__main__":
+    date = "250617"   
+    data_dir = "../data"
     parser = ArgumentParser(description="Read df from pickle and get data from website")
-    parser.add_argument("-i", "--input_file", default="Data/250602_job_number.pkl")
-    parser.add_argument("-o", "--output_dir", default="Data/Scrape/")
+    parser.add_argument("-i", "--input_file", default=f"{data_dir}/{date}_job_number_dedup.pkl")
+    parser.add_argument("-o", "--output_dir", default=f"{data_dir}/{date}_scrape")
     parser.add_argument("-d", "--debug", action="store_true", default=False)
     args = parser.parse_args()
     main(args.input_file, args.output_dir, args.debug)

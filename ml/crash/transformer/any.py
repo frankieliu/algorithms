@@ -77,7 +77,6 @@ b = torch.zeros_like(a)
 # b.scatter_() --> will only scatter in one dimension
 # note scatter_ is in place, which scatter is not
 #%%
-import torch
 
 # Create an initial 3D tensor
 input_tensor = torch.zeros(3, 4, 5)
@@ -107,7 +106,6 @@ input_tensor.scatter_(2, index_tensor.unsqueeze(-1), src_tensor.unsqueeze(-1))  
 print("\nTensor after scatter_:")
 print(input_tensor)
 #%%
-import torch
 
 # Create a 3D tensor
 src = torch.arange(1, 37).reshape(3, 4, 3).type(torch.float)
@@ -199,3 +197,28 @@ print(f"Original size: {x.size()}")
 y = x.expand(2, 4, 3)
 print(f"Expanded tensor:\n {y}")
 print(f"Expanded size: {y.size()}")
+#%%
+x = torch.tensor([1, 2, 3])
+print(x.size())
+
+y = x.repeat(4, 2)
+print(y)
+# Output:
+# tensor([[1, 2, 3, 1, 2, 3],
+#         [1, 2, 3, 1, 2, 3],
+#         [1, 2, 3, 1, 2, 3],
+#         [1, 2, 3, 1, 2, 3]])
+
+print(y.size())
+# Output:
+# torch.Size([4, 6])
+
+z = x.repeat(4, 3, 2, 1)
+print(z)
+print(z.size())
+# Output:
+# torch.Size([4, 3, 2, 3])
+
+k = y.repeat(2,1)
+print(k)
+print(y.size(), k.size())

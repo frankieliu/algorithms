@@ -1,22 +1,16 @@
 class BIT:
-    def __init__(self, size, a=None):
-        if a is not None:
-            self.n = len(a)
-        else:
-            self.n = size
+    def __init__(self, a=None):
+        self.n = len(a) 
         self.bit = [0] * (self.n + 1)  # 1-based indexing
         if a is not None:
             self.build(a)
 
-    # adds the
     def build(self, a):
-        i = 1
-        while i <= self.n: 
-            self.bit[i] += self.a[i-1]
-            ni = i + (i&-i)
-            if ni <= self.n:
-                self.bit[ni] += self.bit[i]
-            i = ni
+        for i in range(len(a)):
+            self.bit[i] += a[i]
+            j = i + (i & -i)
+            if j <= self.n:
+                self.bit[j] += self.bit[i]
 
     # update adds delta to i
     def update(self, i, delta):

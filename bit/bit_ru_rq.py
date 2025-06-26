@@ -22,12 +22,24 @@ class BIT_RangeUpdate_RangeQuery:
         self.B2 = BIT(size)
 
     def range_add(self, ql, qr, delta):
+        # this add deltas to B1
         self.B1.add(ql, delta)
         self.B1.add(qr + 1, -delta)
+        
+        # this allows removal of stuff to left of ql
         self.B2.add(ql, delta * (ql - 1))
+        # this allows removal of stuff to the left of qr
         self.B2.add(qr + 1, -delta * qr)
 
     def prefix_sum(self, i):
+        # B1 gives an overestimate because it also includes
+        # [0 0 0 0 x x x x x 0 0 0 0] B1.query
+        #              x*i            this is incorrect
+        #  - - - -                    need to subtract x*(ql-1)
+        #
+        #                      0*i    this is incorrect
+        #                             need to add contribution x*(qr-ql+1)
+        #          ^          ^       this gives -x(qr-ql+1)
         return self.B1.query(i) * i - self.B2.query(i)
 
     def range_sum(self, ql, qr):

@@ -9,9 +9,10 @@ class AsyncRateLimiter:
 
         # cannot have more that max_requests outstanding
         self.semaphore = asyncio.Semaphore(max_requests)
-        
+
+        # the deque is here to         
         # queue used to keep track of the outstanding requests inside the time_window
-        self.request_times = deque(maxlen=max_requests)
+        self.request_times = deque(maxle-n=max_requests)
 
         # internal lock for keeping track of deque and wait_time
         self.lock = asyncio.Lock()
@@ -28,6 +29,7 @@ class AsyncRateLimiter:
                 # Remove expired requests
                 while self.request_times and (now - self.request_times[0]) > self.time_window:
                     self.request_times.popleft()
+                    self.semaphore.release()
 
                 # you escape if all the requests are within the max_request
                 if len(self.request_times) < self.max_requests:
@@ -47,6 +49,7 @@ class AsyncRateLimiter:
     async def acquire(self):
         await self._wait_for_next_available()
         await self.semaphore.acquire()
+
         # add yourself to the dequeue
         # it contains only tasks that are running
         async with self.lock:
@@ -57,7 +60,7 @@ class AsyncRateLimiter:
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        self.semaphore.release()
+        pass
 
 import asyncio
 import time

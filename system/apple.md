@@ -1,3 +1,137 @@
+HPC 
+Deep dive
+Partner foundation model
+Everyone 
+Value for the job
+Partnership with different companies
+
+Team is pretty new
+- part of a reorg
+- On-device
+- consolidate into
+  - distributed PyTorch
+  - tensor / model implementation
+  - more challenging
+  - three people
+  - six people
+  - senior + / team of experts
+    - work ownership
+    - connection with partners
+    - innovation
+    - context switch
+- tomorrow presentation
+  - troubleshoot
+  - build RDMA - root cause analysis
+  - automatic root cause
+  - spread in a spectrum
+  - big context switch
+  - long term 
+  - model optimization - 50-60%
+
+Siri
+Apple inteligen
+foundation model teeam
+
+- Batch service team
+training team
+classic
+cloud
+aws gcp
+k8s
+to bring cluster up
+scheduling and fleet management
+
+- PaaS service
+submit
+API service
+pre-scheduling
+micro-service team
+
+- Runtime and HPC component
+inside the container
+on the runtime
+K8s - operator
+1000s
+Job controller 
+manage all the GPU resources
+pytorch
+job runtime 
+error happens
+monitor
+runtime has to make right decision
+recovery
+user error system time
+distributed training
+realibility and performance
+hyperpar training
+running training model
+tuning algorithms hook up
+training jobs to hyperparameter 
+tuning service
+search algorithms
+bring popular
+Spark and Ray
+run batch inference job
+serve a deepseek model
+what is the right tool to use
+provide system level runtime
+application runtime
+fleet management
+HPC computing
+accelerator and network
+GPU different vendors
+AMD Google GPU
+which one should we use
+prepare accelerator to consume
+optimize
+driver, image to provide
+run benchmark
+rdma cuda
+fleet management
+inboard new instance time
+
+jax has crashed
+worked close with the user
+many teams 
+contributing to these libraries
+checkpointing
+distributed algorithm optimization
+serving how to tune VLM
+
+Not yet, dedicated team on framework
+Training framework
+Triton kernel
+Partner teams contribute to partner framework
+Improve efficiency
+
+Troubleshooting
+All Reduce on the roadmap
+Fork put more logs 
+NCCL is hanging
+Reability tool hanging
+
+RoCE
+How different 
+Write own 
+
+Ray openAI - device
+JAX one area
+Ray control the communication
+
+Orchestration at high level
+
+Airflow
+
+Shared cluster and sometime on device nodes
+Apple internal 
+Shared Ray cluster
+
+Provide the tooling
+Reinforcement learning
+Model architecture
+Distrubited
+SFT troubleshoot jobs
+
 ---
 
 Qualifications
@@ -39,8 +173,8 @@ Qualifications
     - RoCE 100-400 Gbps
     - NVLink/NVSwitch - 600-900 GB/s
 
-  - Fat Tree - Google TPU pods
-  - Dragonfly - reduce hop count
+  - Fat Tree - Google TPU pods - keep bandwidth constant across switch layers, n
+  - Dragonfly - reduce hop count, optical fast, less bandwidth between optical groups
   - 3D Torus
 
   - INFERENCE

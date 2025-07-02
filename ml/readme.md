@@ -414,3 +414,6 @@ SVM  - good for images and audio
 
 But NN nowadays for this kind of data
 ---
+
+# The BEST
+[all about model/tensor/pipeline](https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/JAX/tutorial2/Introduction_to_JAX.html)

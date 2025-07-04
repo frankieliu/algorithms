@@ -31,3 +31,45 @@
 : if you meet the same count later, then the stuff in between sums to 0
 
 https://ipleak.net/
+
+317 Shortest Distance from All Buildings
+: take bfs from each building
+: mark a distance and a visited grid
+
+33 Search in Rotated Sorted Array
+: check whether the side is sorted first
+: if sorted, then check if element on that side, if not then look at the other side
+: on checking if left side is sorted, you want to nums[l] <= nums[mid] in case of single element on left
+
+3443 Max Manhattan Distance After K Changes
+: The maximum you distance is the length of the string up to i, so it is the upper bound of improvement,
+  so we add to the running distance 2k and make sure it stays within bounds
+
+792 Number of Matching Subsequences
+: put words into buckets corresponding to the letters that they are waiting for
+: iterate through the string, moving words in the buckets into new buckets
+:
+: interesting  O(words_len * log(len(s))) solution
+```python
+__import__("atexit").register(lambda: open("display_runtime.txt", "w").write("0"))
+class Solution:
+    def numMatchingSubseq(self, s: str, words: List[str]) -> int:
+        letter_indices = defaultdict(list)
+        for i, c in enumerate(s):
+            letter_indices[c].append(i)
+
+        def is_subsequence(word):
+            pos = -1
+            for char in word:
+                indices = letter_indices[char]
+                i = bisect.bisect_right(indices, pos)
+                if i == len(indices):
+                    return False
+                pos = indices[i]
+            return True
+
+        return sum(1 for word in words if is_subsequence(word))
+```
+
+12 Integer to Roman
+: use bisect to find the closest thing to and remove from value

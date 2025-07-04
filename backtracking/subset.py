@@ -1,4 +1,4 @@
-def get_subsets(nums):
+def subsets(nums):
     subsets = []
 
     def backtrack(start, current_subset):
@@ -15,7 +15,7 @@ def get_subsets(nums):
     return subsets
 
 numbers = [1, 2, 3]
-all_subsets = get_subsets(numbers)
+all_subsets = subsets(numbers)
 print(all_subsets)  # Output: [[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]
 
 """

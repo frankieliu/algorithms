@@ -73,3 +73,24 @@ class Solution:
 
 12 Integer to Roman
 : use bisect to find the closest thing to and remove from value
+
+2081 Sum of k-Mirror Numbers
+: count 0-9     -> generate odd and even palindrome
+: count 10-99   
+: count 100-999
+: check if other base is also palindrome
+
+713 Subarray Product Less Than K
+: sliding window
+
+187 Repeated DNA Sequences
+: Rabin Karp
+: 10 long -> 4^0 ... 4^9
+: I like dividing the previous by 4 and adding a new one * 4^9
+
+2603 Collect Coins in a Tree
+: Kahn's algo to remove branches without coins
+: Kahn's algo on leafs with coin for 2 times
+: remaining (nodes - 1) * 2
+
+

@@ -133,7 +133,14 @@ Distrubited
 SFT troubleshoot jobs
 
 ---
-
+vehicle hit vhicle failed right of way
+rough;y castro central mtv bi
+21225
+1130pm 
+caas211002391
+2015 prius 7pgf915
+100000 / person 300000/ac
+file no 262238
 Qualifications
 
 - Experience building large-scale deep learning infrastructure or platforms for distributed model training
@@ -457,3 +464,5 @@ Publication record at ML conferences such as MLSys, NeurIPS, etc.
 Advance degree in the area of Computer Science or equivalent, or a related
 
 ---
+
+https://www.interconnects.ai/p/the-state-of-post-training-2025

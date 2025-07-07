@@ -1,12 +1,12 @@
 from collections import Counter
 
-def subsets_limited_by_counts(nums):
+def subsets_repeated(nums):
     result = []
     counter = Counter(nums)
     unique_nums = list(counter.keys())
 
     def backtrack(index, path):
-        print(f"bt({index},{path})")
+        # print(f"bt({index},{path})")
 
         if index == len(unique_nums):
             result.append(path[:])
@@ -22,9 +22,6 @@ def subsets_limited_by_counts(nums):
 
     backtrack(0, [])
     return result
-
-nums = [1, 1, 2]
-print(subsets_limited_by_counts(nums))
 
 """
 how does this backtracking work?

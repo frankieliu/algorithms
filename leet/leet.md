@@ -30,4 +30,17 @@
 : keep a hash of count
 : if you meet the same count later, then the stuff in between sums to 0
 
+626 exchange seats
+```sql
+# Write your MySQL query statement below
+SELECT
+  ROW_NUMBER() OVER(ORDER BY IF(MOD(id, 2) = 0, id - 1, id + 1)) AS id,
+  student
+FROM Seat;
+```
+
+1008 Construct Binary Search Tree from Preorder Traversal
+: use lo and hi to limit what can go on the left and right subtree
+: if your value is not within lo and hi, don't advance idx
+
 https://ipleak.net/

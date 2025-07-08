@@ -1,5 +1,5 @@
 from unittest import TestCase
-from manacher2 import manacher
+from manacher3 import manacher
 
 class TestManacher(TestCase):
     def testManacher(self):

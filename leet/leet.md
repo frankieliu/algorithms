@@ -1,3 +1,5 @@
+https://ipleak.net/
+
 84 Largest Rectangle in Histogram
 : INCREASING monotonic queue
 : when popping an element calculate the area of the rectangle
@@ -26,24 +28,9 @@
 : go from the back and reduce the count if certain amount it taken
 : for example (v, count-used), then don't have to keep track
 
-525 COntinguous Array 0/1
+525 Continguous Array 0/1
 : keep a hash of count
 : if you meet the same count later, then the stuff in between sums to 0
-
-626 exchange seats
-```sql
-# Write your MySQL query statement below
-SELECT
-  ROW_NUMBER() OVER(ORDER BY IF(MOD(id, 2) = 0, id - 1, id + 1)) AS id,
-  student
-FROM Seat;
-```
-
-1008 Construct Binary Search Tree from Preorder Traversal
-: use lo and hi to limit what can go on the left and right subtree
-: if your value is not within lo and hi, don't advance idx
-
-https://ipleak.net/
 
 317 Shortest Distance from All Buildings
 : take bfs from each building
@@ -106,4 +93,37 @@ class Solution:
 : Kahn's algo on leafs with coin for 2 times
 : remaining (nodes - 1) * 2
 
+626 exchange seats
+```sql
+# Write your MySQL query statement below
+SELECT
+  ROW_NUMBER() OVER(ORDER BY IF(MOD(id, 2) = 0, id - 1, id + 1)) AS id,
+  student
+FROM Seat;
+```
 
+1008 Construct Binary Search Tree from Preorder Traversal
+: use lo and hi to limit what can go on the left and right subtree
+: if your value is not within lo and hi, don't advance idx
+
+213 House Robber II
+: consider the two possible edge conditions
+: either n-1 house is robbed p_robbed = nums[-1], stop at n-1 
+:        n-1 house is not robbed p_robbed = 0     stop at n-2
+
+
+22 Generate Parentheses
+: C(n) = C(0)C(n-1) + C(i)C(n-1-i) + ...
+: "(" l ")" r for l in g(i) for r in g(n-1-i)
+
+4 Median of Two Sorted Arrays
+: break into the mid of each and ask about the ranges
+: you just need to keep moving the al ah, and bl bh
+  the k doesn't need to change
+ 
+25 Reverse Nodes in k-Group
+: use insertion point to reverse a list
+: pointer to the where to insert
+: pointer points to added node, and added node points to pointer.next
+: pointer.next, added_node.next, added_node = added, pointer.next, added_node.next
+: note pointer doesn't move

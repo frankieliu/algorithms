@@ -93,4 +93,27 @@ class Solution:
 : Kahn's algo on leafs with coin for 2 times
 : remaining (nodes - 1) * 2
 
+1143 Longest Common Subsequence
+: dp using similar concept as edit distance to go from start to target
+: if s[i] == t[j], then dp[i][j] = 1 + dp[i+1][j+1]
+: else dp[i][j] = max(dp[i+1][j], dp[i][j+1])
+
+44 Wildcard Matching
+: i source j pattern
+: if letters match: dp[i][j] = dp[i+1][j+1]
+: if pattern = "?": dp[i][j] = dp[i+1][j+1]
+: if pattern = "*": dp[i][j] = dp[i][j+1] "match empty" or dp[i+1][j] "match one and more"
+: add # # sentinels for source and pattern
+
+300 Longest Increasing Subsequence
+: Patient sort
+
+686 Repeated String Match
+: can try RK with p = 113 and M = 10**9+7
+: just use z algorithm
+
+
+1424 Diagonal Traverse II
+: bfs from (0,0), and add down and right
+
 

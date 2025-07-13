@@ -1,0 +1,90 @@
+settings.tabsThreshold = 0;
+
+// Saving to a file
+function saveTextToFile(text, filename) {
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href); // Clean up the object URL
+}
+
+const jsonData = {
+  name: "John Doe",
+  age: 30,
+  city: "New York"
+};
+
+// Example usage:
+// saveTextToFile('Hello, world!', 'my_document.txt');
+
+function saveJsonToFile(data, filename) {
+  const jsonString = JSON.stringify(data, null, 2); // Pretty-print JSON
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a); // Append to body (can be hidden)
+  a.click();
+  document.body.removeChild(a); // Clean up
+  URL.revokeObjectURL(url);
+}
+
+// Call the function to save the JSON data
+// saveJsonToFile(jsonData, 'my_data.json');
+
+// an example to create a new mapping `ctrl-y`
+api.mapkey('<ctrl-y>', 'Show me the money', function() {
+    Front.showPopup('a well-known phrase uttered by characters in the 1996 film Jerry Maguire (Escape to close).');
+});
+
+// an example to replace `T` with `gt`, click `Default mappings` to see how `T` works.
+api.map('gt', 'T');
+
+// an example to remove mapkey `Ctrl-i`
+api.unmap('<ctrl-i>');
+
+// set theme
+settings.theme = `
+.sk_theme {
+    font-family: Input Sans Condensed, Charcoal, sans-serif;
+    font-size: 10pt;
+    background: #24272e;
+    color: #abb2bf;
+}
+.sk_theme tbody {
+    color: #fff;
+}
+.sk_theme input {
+    color: #d0d0d0;
+}
+.sk_theme .url {
+    color: #61afef;
+}
+.sk_theme .annotation {
+    color: #56b6c2;
+}
+.sk_theme .omnibar_highlight {
+    color: #528bff;
+}
+.sk_theme .omnibar_timestamp {
+    color: #e5c07b;
+}
+.sk_theme .omnibar_visitcount {
+    color: #98c379;
+}
+.sk_theme #sk_omnibarSearchResult ul li:nth-child(odd) {
+    background: #303030;
+}
+.sk_theme #sk_omnibarSearchResult ul li.focused {
+    background: #3e4452;
+}
+#sk_status, #sk_find {
+    font-size: 20pt;
+}`;
+// click `Save` button to make above settings to take effect.</ctrl-i></ctrl-y>

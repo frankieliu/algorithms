@@ -6,6 +6,7 @@ Value for the job
 Partnership with different companies
 
 Team is pretty new
+
 - part of a reorg
 - On-device
 - consolidate into
@@ -19,6 +20,7 @@ Team is pretty new
     - connection with partners
     - innovation
     - context switch
+
 - tomorrow presentation
   - troubleshoot
   - build RDMA - root cause analysis
@@ -28,18 +30,19 @@ Team is pretty new
   - long term 
   - model optimization - 50-60%
 
-Siri
-Apple inteligen
-foundation model teeam
+- partners
+  - Siri
+  - Apple inteligence
+  - foundation model teeam
 
 - Batch service team
-training team
-classic
-cloud
-aws gcp
-k8s
-to bring cluster up
-scheduling and fleet management
+  - training team
+  - classic
+  - cloud
+  - aws gcp
+  - k8s
+  - to bring cluster up
+  - scheduling and fleet management
 
 - PaaS service
 submit
@@ -63,7 +66,7 @@ recovery
 user error system time
 distributed training
 realibility and performance
-hyperpar training
+hyperparameter training
 running training model
 tuning algorithms hook up
 training jobs to hyperparameter 
@@ -211,20 +214,24 @@ SFT troubleshoot jobs
       - 1b sign, 8b exponent, 7b fraction
     - CUDA kernel basics
       - THREAD BLOCKS / GRIDS / WARPS
+
       - THREAD:
         - smallest unit of execution
         - private register for fast access to local variables
         - access to slow global memory
+
       - THREAD BLOCK:
         - share data through SHARED MEMORY
         - SYNCTHREADS()
         - 1024 threads per block
         - On one STREAMING MICROPROCESSOR
+
       - GRID:
         - collection of ThreadBlocks
         - Blocks cannot SYNC with each other
           - Write results to Global Memory
         - Multiple SMs
+
       - THREAD BLOCK -> Assembly line
       - GRID -> Factory Floor
       - WARP
@@ -457,3 +464,88 @@ Advance degree in the area of Computer Science or equivalent, or a related
 ---
 
 https://www.interconnects.ai/p/the-state-of-post-training-2025
+
+---
+Summary
+Posted:
+Jul 09, 2025
+Role Number:
+200606169
+Want to build the machine learning platform that engineers rely on to develop next-generation Apple Intelligence products and services? As a machine learning engineer on our team, you will create platforms and tools to enable performant, scalable ML workload for Apple’s AI-driven experiences. Join our team of highly skilled, impact-focused engineers! This role also includes opportunities to open source your work and publish at top ML conferences.
+Description
+We're searching for strong machine learning engineers to help build next-generation platform for training deep learning models at scale. You'll be part of a team of distributed systems and machine learning experts, focusing on reliability, scalability and performance of ML related workloads including model training, inference and data processing.
+
+We're looking for candidates with polished coding skills as well as passion for distributed systems and machine learning. In exchange, we offer a respectful work environment, flexible responsibilities, and access to world-class experts and growth opportunities—all at one of the best companies in the world. Design and develop components for our centralized, scalable ML platform. Push the limits of existing solutions for large-scale ML workloads. Develop novel techniques to circumvent the limitations of these solutions. Deploy your techniques on high-impact tasks from our partners across the company building new Apple Intelligence products and services. We encourage publishing novel work at top ML conferences and releasing contributions as open source.
+Minimum Qualifications
+Experience building large-scale deep learning infrastructure or platforms for distributed model training
+Experience with large-scale AI training infra components, such as accelerators, network fabrics, CUDA, NCCL, RDMA
+Strong programming skills in Python or Go
+Understanding of data structures, software design principles, and algorithms
+Experience building large-scale distributed systems with tools such as Kubernetes, Kafka, Prometheus, etc.
+Experience with deep learning frameworks, such as PyTorch, or JAX
+With minimum of 7+ years of industry experience
+Bachelors degree in the area of Computer Science or equivalent, or a related domain
+Preferred Qualifications
+Experience working with public cloud vendors such as AWS, GCP, Azure.
+Experience developing model parallel and data parallel training solutions and other training optimizations
+Familiarity with recent developments in foundation model architectures for language and multimodal
+Publication record at ML conferences such as MLSys, NeurIPS, etc.
+Advance degree in the area of Computer Science or equivalent, or a related
+Pay & Benefits
+At Apple, base pay is one part of our total compensation package and is determined within a range. This provides the opportunity to progress as you grow and develop within a role. The base pay range for this role is between $181,100 and $318,400, and your base pay will depend on your skills, qualifications, experience, and location.
+
+Apple employees also have the opportunity to become an Apple shareholder through participation in Apple’s discretionary employee stock programs. Apple employees are eligible for discretionary restricted stock unit awards, and can purchase Apple stock at a discount if voluntarily participating in Apple’s Employee Stock Purchase Plan. You’ll also receive benefits including: Comprehensive medical and dental coverage, retirement benefits, a range of discounted products and free services, and for formal education related to advancing your career at Apple, reimbursement for certain educational expenses — including tuition. Additionally, this role might be eligible for discretionary bonuses or commission payments as well as relocation. Learn more about Apple Benefits.
+
+Note: Apple benefit, compensation and employee stock programs are subject to eligibility requirements and other terms of the applicable plan or program.
+Apple is an equal opportunity employer that is committed to inclusion and diversity. We seek to promote equal opportunity for all applicants without regard to race, color, religion, sex, sexual orientation, gender identity, national origin, disability, Veteran status, or other legally protected characteristics. Learn more about your EEO rights as an applicant.
+
+# ML Runtime from data bricks
+
+- Automated Experiments Tracking: Track, compare, and visualize hundreds of thousands of experiments using open source or Managed MLflow and the parallel coordinates plot feature.
+
+- Automated Model Search (for Single-node ML): Optimized and distributed conditional hyperparameter search across multiple model architectures with enhanced Hyperopt and automated tracking to MLflow.
+
+- Automated Hyperparameter Tuning for Single-node Machine Learning: Optimized and distributed hyperparameter search with enhanced Hyperopt and automated tracking to MLflow.
+
+- Automated Hyperparameter Tuning for Distributed Machine Learning: Deep integration with PySpark MLlib’s Cross Validation to automatically track MLlib experiments in MLflow.
+
+# Optimized for simplified scaling
+Optimized TensorFlow: Benefit from TensorFlow CUDA-optimized version on GPU clusters for maximum performance.
+
+HorovodRunner: Quickly migrate your single node deep learning training code to run on a Databricks cluster with HorovodRunner, a simple API that abstracts complications faced when using Horovod for distributed training.
+
+Optimized MLlib Logistic Regression and Tree Classifiers: The most popular estimators have been optimized as part of the Databricks Runtime for ML to provide you with up to 40% speed-up compared to Apache Spark 2.4.0.
+
+Optimized GraphFrames: Run GraphFrames 2-4 times faster and benefit from up to 100 times speed-up for Graph queries, depending on the workloads and data skew.
+
+Optimized Storage for Deep Learning Workloads: Leverage high-performance solutions on Azure, AWS, and GCP for data loading and model checkpointing, both of which are critical to deep learning training workloads.
+
+# Starbucks / Databricks
+
+- Run faster and cheaper
+- Lazy - same code and let it distribute
+- Horovod framework
+  - API to run distributed learning workloads
+- Spark: Map/Reduce distributed
+  - independent task
+  - shuffle / merge
+- MPI all 8 need to talk to each other
+  - can't relaunch single task if failure
+- Barrier execution mode
+
+  ![alt text](image-2.png)
+
+- Driver and workers
+  - single worker on the driver 
+  - runCNN:
+      model.add(conv3s)
+  - runCC_hvd():
+      hvd.init()
+      config.tf.ConfigProto
+      config.gpu_options.allow_groth
+      config.gpu_options.visible_device_list = str(hvd.local_rank())
+      epochs = int(math.ceil(12.0/hvd.size())
+        callbacks = [
+          hvd.callbacks.BroadcastGlobalVariablesCallback(0)
+        ]
+  - push all the variable and code to the workers

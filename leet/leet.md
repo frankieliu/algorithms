@@ -109,9 +109,8 @@ class Solution:
 : Patient sort
 
 686 Repeated String Match
-: can try RK with p = 113 and M = 10**9+7
+: can try RabinKarp with p = 113 and M = 10**9+7
 : just use z algorithm
-
 
 1424 Diagonal Traverse II
 : bfs from (0,0), and add down and right
@@ -150,3 +149,16 @@ FROM Seat;
 : pointer points to added node, and added node points to pointer.next
 : pointer.next, added_node.next, added_node = added, pointer.next, added_node.next
 : note pointer doesn't move
+
+1353 Maximum Number of Events That Can Be Attended
+: simple iterate through the days
+: each day decide which intervals are valid (intervals are sorted by start date)
+: put each interval in a heap on end date, pick the one with smallest end date
+: harder to implement: pick the first day available from sorted interval list
+: add any intervals with the same start day into the heap
+: pick the one with smallest end day
+: as you remove the one with smallest end day, advance d to next day
+: remove any items in the heap with end time smaller than d (day to consider)
+
+48 Rotate Image
+: Rotate by 90 is the same as transpose (reflect i==j, and mirror i == mid)

@@ -4,26 +4,30 @@ import re
 import pandas as pd
 from save_to_db import df_to_db
 
+
 def get_jobs(input):
     """ get the jobs numbers from file """
-    out = [] 
-    with open(input,"r") as f:
+    out = []
+    with open(input, "r") as f:
         for line in f.readlines():
-            mo = re.search(r"https://jobs.apple.com/en-us/details/(?P<job_number>\d+)(?:$|/.+)", line)
+            mo = re.search(
+                r"https://jobs.apple.com/en-us/details/(?P<job_number>\d+)(?:$|/.+)", line)
             if mo:
                 if mo.group("job_number"):
                     print(mo["job_number"])
                     out.append(int(mo["job_number"]))
                 else:
-                    # pass 
+                    # pass
                     print(f"Not found: {line}")
             else:
                 pass
                 # print(f"Not found: {line}")
     return out
-if __name__=="__main__":
+
+
+if __name__ == "__main__":
     file = "actions"
-    date = "250617"
+    date = "250713"
     data_dir = "../data/"
     db = "../data/apple.db"
     table = "jobs_250617_action"

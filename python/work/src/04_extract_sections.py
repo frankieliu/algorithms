@@ -10,7 +10,8 @@ headings = [("pay", "Pay \& Benefits"),
             ("sum", "Summary"),
             ("title", "Search"),
             ("end", "(Apple employees)|(Apple is an equal)")]
-regex = "|".join(f"(?P<{name}>{value})" for name,value in headings)
+regex = "|".join(f"(?P<{name}>{value})" for name, value in headings)
+
 
 def extract(text):
     col = defaultdict(list)
@@ -26,6 +27,7 @@ def extract(text):
                 col[cur_section].append(line)
     return col
 
+
 def refine_summary(summary):
     col = dict()
     col['posted'] = col['number'] = None
@@ -36,8 +38,9 @@ def refine_summary(summary):
     if 'Role Number:' in summary:
         j = summary.index('Role Number:') + 1
         col['number'] = summary[j]
-    col['summary'] = "\n".join(summary[max(i,j)+1:])
+    col['summary'] = "\n".join(summary[max(i, j)+1:])
     return col
+
 
 def refine(prev):
     col = dict()
@@ -63,6 +66,7 @@ def refine(prev):
             col['pay_max'] = match_.group(2)
     return col
 
+
 def main(input_dir, output_file, debug, debug_files=None):
     if debug and debug_files:
         files = debug_files
@@ -85,14 +89,18 @@ def main(input_dir, output_file, debug, debug_files=None):
     with open(output_file, "wb") as f:
         df.to_pickle(f)
 
-if __name__=="__main__":
-    date = "250617"
+
+if __name__ == "__main__":
+    date = "250713"
     data_dir = "../data"
     parser = ArgumentParser(description="Reads text files to extract sections")
-    parser.add_argument("-i", "--input_dir", default=f"{data_dir}/{date}_scrape/")
-    parser.add_argument("-o", "--output_file", default=f"{data_dir}/{date}_job_description.pkl")
+    parser.add_argument("-i", "--input_dir",
+                        default=f"{data_dir}/{date}_03_scrape/")
+    parser.add_argument("-o", "--output_file",
+                        default=f"{data_dir}/{date}_04_job_description.pkl")
     parser.add_argument("-d", "--debug", action="store_true", default=False)
-    parser.add_argument("-f", "--files_to_debug", nargs='*', default=["Data/Scrape/200604244.txt"])
+    parser.add_argument("-f", "--files_to_debug", nargs='*',
+                        default=["Data/Scrape/200604244.txt"])
     args = parser.parse_args()
     main(args.input_dir, args.output_file, args.debug,
-        debug_files=args.files_to_debug) 
+         debug_files=args.files_to_debug)

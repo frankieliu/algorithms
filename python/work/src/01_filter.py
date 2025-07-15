@@ -7,8 +7,8 @@ import numpy as np
 def main(input_file, output_file, debug=False, exclude=""):
     out = []
     with open(input_file) as f:
-        lines = f.readlines()
-        for el in lines:
+        l = f.readlines()
+        for el in l:
             el = el.strip()
             m = re.split(r"\/+|\?team=", el)
             if debug:

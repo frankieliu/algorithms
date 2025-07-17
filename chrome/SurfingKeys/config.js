@@ -1,4 +1,5 @@
-settings.tabsThreshold = 0;
+// file:///C:/cygwin64/home/2025/algorithms/chrome/SurfingKeys/config.js
+// settings.tabsThreshold = 0;
 
 // Saving to a file
 function saveTextToFile(text, filename) {

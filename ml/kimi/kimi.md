@@ -9,6 +9,7 @@ The paper highlights several core ingredients in the development of Kimi k1.5:
 
 * **Long Context Scaling:** Kimi k1.5 scales the context window for RL training to 128k tokens. The research indicates that increased context length leads to continuous performance improvements. A key innovation here is the use of **partial rollouts** for improved training efficiency, which involves reusing large portions of previous trajectories to sample new ones, reducing the cost of re-generating from scratch.
 * **Improved Policy Optimization:** The model uses a variant of **online mirror descent** for robust policy optimization, specifically formulated for long-Chain of Thought (CoT) scenarios. This is further enhanced by effective sampling strategies, the introduction of a **length penalty**, and optimized data recipes.
+
 * **Simplistic Framework:** Unlike prior approaches that often rely on complex techniques like Monte Carlo tree search, value functions, or process reward models, Kimi k1.5 achieves strong performance with a more straightforward RL framework. The ability to scale context length allows the learned CoTs to exhibit properties of planning, reflection, and correction.
 * **Multimodality:** Kimi k1.5 is trained on both text and vision data, enabling it to reason jointly across these modalities.
 * **Long2short Methods:** The paper also presents "long2short" methods, which leverage techniques developed for long-CoT models to enhance the performance of short-CoT models. These methods include **model merging**, **shortest rejection sampling**, **Direct Preference Optimization (DPO)**, and a dedicated **long2short RL** phase.
@@ -51,3 +52,53 @@ The overall development of Kimi k1.5 consists of several stages:
 ---
 
 The paper concludes that Kimi k1.5 establishes a simplistic yet effective RL framework by leveraging long context scaling and improved policy optimization, demonstrating that LLMs can effectively scale their training data through learning to explore with rewards, leading to significant advancements in reasoning capabilities.
+
+---
+
+Kimi:
+
+# Long context scaling
+- 128k token context window
+- expensive to do a single rollout
+- partial rollout reuse significant portion from previously generated sequence
+
+# Mirror Descent  
+- optimizing over probablity distributions
+  - values are non-negative and sum up to one
+- instead, perform updates in dual space and map it back to primal space
+- transformation via a mirror map
+  - aka distance generating function
+  - aka potential function
+
+## Advantages
+- faster convergence
+- implicit regularization
+- avoid value functions
+
+## Steps
+1. map parameters to dual space
+2. gradient step in dual space
+3. map back to primal space
+4. projection if constrained
+
+## Example mapping
+1. $\phi(x)  = x \log x$
+1. $\grad \phi = \log x + 1$
+1. Can think of $\log$ as mapping probabilities to log probability
+
+## LLM
+1. policy \pi(y,z|x) represent the probability of generating a z (CoT) and final answer y, given input x.
+
+
+# Problem statement
+- Need more data to scale models "intelligence"
+
+# Features
+- 128k token context length
+- online mirror gradient descent
+- sampling strategy, length penalty
+- simple framework
+  - no Monte Carlo tree search
+  - value functions
+  - process rewards
+- multimodality

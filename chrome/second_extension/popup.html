@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual File Explorer</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Virtual File Explorer</h1>
+
+        <div class="path-bar">
+            Current Path: <span id="current-path">/</span>
+        </div>
+
+        <div class="toolbar">
+            <button id="create-folder-btn">New Folder</button>
+            <button id="create-file-btn">New File (Note)</button>
+            <button id="import-download-btn">Import Download</button>
+            <button id="go-back-btn" style="display: none;">Go Up</button>
+        </div>
+
+        <div id="file-list" class="file-list">
+            </div>
+
+        <div id="file-details" class="file-details" style="display: none;">
+            <h2>File Details</h2>
+            <p>Name: <span id="detail-name"></span></p>
+            <p>Type: <span id="detail-type"></span></p>
+            <div id="detail-content-area" style="display: none;">
+                <label for="detail-content">Content:</label>
+                <textarea id="detail-content"></textarea>
+                <button id="save-content-btn">Save Content</button>
+            </div>
+            <button id="move-btn">Move</button>
+            <button id="rename-btn">Rename</button>
+            <button id="delete-btn">Delete</button>
+            <button id="close-details-btn">Close</button>
+        </div>
+
+        <div id="move-dialog" class="dialog" style="display: none;">
+            <h3>Move Item</h3>
+            <p>Move "<span id="move-item-name"></span>" to:</p>
+            <select id="move-folder-select"></select>
+            <button id="confirm-move-btn">Move Here</button>
+            <button id="cancel-move-btn">Cancel</button>
+        </div>
+
+        <div id="rename-dialog" class="dialog" style="display: none;">
+            <h3>Rename Item</h3>
+            <p>New name for "<span id="rename-old-name"></span>":</p>
+            <input type="text" id="rename-new-name" />
+            <button id="confirm-rename-btn">Rename</button>
+            <button id="cancel-rename-btn">Cancel</button>
+        </div>
+
+        <div id="import-dialog" class="dialog" style="display: none;">
+            <h3>Import Download</h3>
+            <p>Select a download to import:</p>
+            <select id="download-select"></select>
+            <button id="confirm-import-btn">Import</button>
+            <button id="cancel-import-btn">Cancel</button>
+        </div>
+
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

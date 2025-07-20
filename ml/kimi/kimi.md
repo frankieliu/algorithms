@@ -102,3 +102,189 @@ Kimi:
   - value functions
   - process rewards
 - multimodality
+
+# Explicit Tree Search vs Implicit Search
+- Explicit
+  - build tree/graph of nodes
+  - planning algorithm MCTS, A*, BFS, DFS to traverse
+    tree and select best path
+  - LLM is a sub-module that generates candidate moves
+- Implicit Search
+  - LLM does not explicitly branch
+  - "decision-making" for reasoning path is encoded
+    in the model weights
+    - there is no external algorithm that evaluates them
+      and picks the best one to continue
+
+# Kimi similarities
+
+## Multi-stage Training Paradigm
+1. Pre-training
+   - learn language
+   - world knowledge
+   - basic reasoning
+2. SFT
+   - instruction following to align with desired behaviors and formats
+3. RL
+   - use of a reward signal
+
+## Reward model
+- human-generated (RLHF)
+- ai-generated (RLAIF)
+- specilized correctness checker (Kimi CoT RM)
+
+## Use of policy gradients
+
+# Kimi differences
+
+## Specialized CoT RM
+- RM performs CoT style reasoning to evaluate policy model's intermediate steps and final answer
+
+## Focus on Long-CoT
+- Explicitly designed to generate long, coherent, and implict planning CoT.
+- context window scaled to 128k
+- model internalizes long reasoning patterns
+- model learns to generate its own search process
+
+## Online policy mirror descent
+- vs. PPO complex to tune and less stable
+- Kimi uses a variant of online policy mirror descnt
+  - suited for optimizing probability distributions
+  - uses non-Euclidean metric
+  - more stable and natural updates
+    - "loss" doesn't oscillate as much
+    - "natural" - operates in log space (presumably)
+  - more robust and faster convergence
+    - paper: "extension of a usual on-policy regularized policy gradient algorithm to the off-policy case"
+
+## Direct integration of length penalty (long2short method)
+- adds length penalty in the reward funciton
+- long2short RL: distinct RL phase with
+  - strong length penalties and re
+  - reduced max generation lengths
+  - training for conciseness AFTER initial reasoning capabilities are established
+
+## Sampling strategies and data curation
+- Shortest rejection sampling - during SFT data creation
+- DPO (Direct Preference Optimization) for Long2Short 
+- Curriculum sampling - begin with easier tasks then go into harder taks
+
+## Summary
+- Sophisticated CoT RM
+- Online Policy Mirror Descent
+- Direct integration of length penalties with long2short methods
+
+
+# Derivation of the grad of the surrogate loss
+You're asking about the core of how policies are updated in RL algorithms that incorporate KL regularization, like the one used in the Kimi paper. The "surrogate loss" is a common term for the objective function that we optimize iteratively to update the policy.
+
+Let's derive the gradient of the surrogate loss. We start with the objective function we discussed:
+
+$$L(\pi) = \mathbb{E}_{(y,z) \sim \pi} [r(x, y, y^*)] - \tau \text{KL}(\pi(\cdot|x) || \pi_{\theta_i}(\cdot|x))$$
+
+We want to find the gradient of $L(\pi)$ with respect to the policy parameters $\theta$ (assuming $\pi$ is parameterized by $\theta$). For simplicity, let's denote $\pi(y, z|x)$ as $\pi_\theta(a)$ and $r(x, y, y^*)$ as $R(a)$, where $a$ represents a trajectory $(y,z)$. The reference policy is $\pi_{\theta_i}(a)$.
+
+The objective can be written in summation form (for discrete action spaces, generalizes to integral for continuous):
+
+$$L(\theta) = \sum_a \pi_\theta(a) R(a) - \tau \sum_a \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right)$$
+
+Now, let's take the gradient with respect to $\theta$:
+
+$$\nabla_\theta L(\theta) = \nabla_\theta \left( \sum_a \pi_\theta(a) R(a) - \tau \sum_a \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right)$$
+
+We can separate this into two terms:
+
+**Term 1: Gradient of Expected Reward**
+
+This is the standard policy gradient term (REINFORCE-like):
+
+$$\nabla_\theta \sum_a \pi_\theta(a) R(a) = \sum_a \nabla_\theta \pi_\theta(a) R(a)$$
+
+Using the log-derivative trick: $\nabla_\theta \pi_\theta(a) = \pi_\theta(a) \frac{\nabla_\theta \pi_\theta(a)}{\pi_\theta(a)} = \pi_\theta(a) \nabla_\theta \log \pi_\theta(a)$.
+
+So, Term 1 becomes:
+$$\sum_a \pi_\theta(a) \nabla_\theta \log \pi_\theta(a) R(a) = \mathbb{E}_{a \sim \pi_\theta} [\nabla_\theta \log \pi_\theta(a) R(a)]$$
+
+**Term 2: Gradient of KL Divergence Regularization**
+
+Now, let's look at the second term:
+$$\nabla_\theta \left( - \tau \sum_a \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right) = - \tau \nabla_\theta \sum_a \pi_\theta(a) (\log \pi_\theta(a) - \log \pi_{\theta_i}(a))$$
+
+Let's apply the product rule and linearity of gradient:
+$$ - \tau \sum_a \left[ \nabla_\theta \pi_\theta(a) (\log \pi_\theta(a) - \log \pi_{\theta_i}(a)) + \pi_\theta(a) \nabla_\theta (\log \pi_\theta(a) - \log \pi_{\theta_i}(a)) \right]$$
+
+$$ = - \tau \sum_a \left[ \pi_\theta(a) \nabla_\theta \log \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) + \pi_\theta(a) \left( \frac{\nabla_\theta \pi_\theta(a)}{\pi_\theta(a)} - \frac{\nabla_\theta \pi_{\theta_i}(a)}{\pi_{\theta_i}(a)} \right) \right]$$
+
+$$ = - \tau \sum_a \left[ \pi_\theta(a) \nabla_\theta \log \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) + \pi_\theta(a) \nabla_\theta \log \pi_\theta(a) - \pi_\theta(a) \nabla_\theta \log \pi_{\theta_i}(a) \right]$$
+
+Now, let's use the property that $\mathbb{E}_{a \sim \pi_\theta} [\nabla_\theta \log \pi_\theta(a)] = \sum_a \pi_\theta(a) \nabla_\theta \log \pi_\theta(a) = \nabla_\theta \sum_a \pi_\theta(a) = \nabla_\theta (1) = 0$. This is a crucial identity in policy gradients.
+
+So the second term simplifies:
+$$= - \tau \sum_a \pi_\theta(a) \nabla_\theta \log \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) - \tau \underbrace{\sum_a \pi_\theta(a) \nabla_\theta \log \pi_\theta(a)}_{=0} + \tau \sum_a \pi_\theta(a) \nabla_\theta \log \pi_{\theta_i}(a)$$
+
+$$= - \tau \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right] + \tau \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_{\theta_i}(a) \right]$$
+
+**Combining Both Terms:**
+
+Now, combine Term 1 and the simplified Term 2:
+
+$$\nabla_\theta L(\theta) = \mathbb{E}_{a \sim \pi_\theta} [\nabla_\theta \log \pi_\theta(a) R(a)] - \tau \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_\theta(a) \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right] + \tau \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_{\theta_i}(a) \right]$$
+
+Factor out the expectation and $\nabla_\theta \log \pi_\theta(a)$ where possible:
+
+$$\nabla_\theta L(\theta) = \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_\theta(a) \left( R(a) - \tau \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right) \right] + \tau \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_{\theta_i}(a) \right]$$
+
+This is the general form of the gradient. In practice, the last term $\tau \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_{\theta_i}(a) \right]$ is often zero or approximately zero if $\pi_{\theta_i}$ is fixed with respect to $\theta$ (as it is the old policy). If $\pi_{\theta_i}$ has some dependence on shared parameters that are being updated, this term might be kept.
+
+**Simplification for Practical Algorithms (e.g., PPO-KL, Trust Region Methods):**
+
+Many algorithms, including those related to Policy Mirror Descent, focus on the first term because the second term's expectation often cancels or is very small for small steps. The core idea is to sample trajectories from the *current* policy $\pi_\theta$ and then update $\theta$ based on this gradient.
+
+The most common form of the policy gradient with KL regularization is often approximated by:
+
+$$\nabla_\theta L(\theta) \approx \mathbb{E}_{a \sim \pi_\theta} \left[ \nabla_\theta \log \pi_\theta(a) \left( R(a) - \tau \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right) \right]$$
+
+This is the form that often appears in algorithms like PPO (Proximal Policy Optimization) with a KL penalty, where the ratio $\frac{\pi_\theta(a)}{\pi_{\theta_i}(a)}$ is directly optimized. The `log-ratio` term penalizes deviations from the old policy.
+
+**Connection to Kimi's Equation 3:**
+
+The Kimi paper's Equation 3 is:
+
+$$g = \mathbb{E}_{y,z \sim \pi_{\theta_i}} \left[ \alpha \nabla_{\theta} \log \pi_{\theta}(y,z|x) \left( r(x, y, y^*) - \tau \log \frac{\pi_{\theta}(y,z|x)}{\pi_{\theta_i}(y,z|x)} \right) \right]$$
+
+Notice some differences:
+1.  **Sampling from $\pi_{\theta_i}$ (Off-Policy):** Kimi's gradient is sampled from the *old* policy $\pi_{\theta_i}$, making it an off-policy gradient. This is common in DPO and similar methods. My derivation above assumed on-policy sampling from $\pi_\theta$.
+    To get the off-policy version, you would use the importance sampling trick: $\mathbb{E}_{a \sim \pi_\theta} [f(a)] = \mathbb{E}_{a \sim \pi_{\theta_i}} [\frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} f(a)]$. Applying this to the first term in our combined gradient:
+    $$\mathbb{E}_{a \sim \pi_{\theta_i}} \left[ \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \nabla_\theta \log \pi_\theta(a) \left( R(a) - \tau \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right) \right) \right]$$
+    However, Kimi's Equation 3 doesn't have the $\frac{\pi_\theta}{\pi_{\theta_i}}$ ratio in front of the gradient term itself. This implies they might be using a specific form of Mirror Descent or a different re-parametrization trick, possibly related to the natural gradient.
+
+2.  **Lack of Second KL Term:** The Kimi gradient **doesn't include the second KL term** $\tau \mathbb{E}_{a \sim \pi_{\theta_i}} \left[ \nabla_\theta \log \pi_{\theta_i}(a) \right]$ that I derived. This is often because $\nabla_\theta \log \pi_{\theta_i}(a)$ is zero if $\pi_{\theta_i}$ is treated as fixed with respect to the current parameters $\theta$ during the gradient calculation. In practice, $\pi_{\theta_i}$ is often a frozen copy of the policy from the previous iteration.
+
+3.  **Coefficient $\alpha$:** The $\alpha$ is a learning rate or step-size parameter.
+
+The Kimi paper's gradient formulation (Equation 3) aligns with what's often seen in **Direct Preference Optimization (DPO)** or similar **implicit policy gradient methods**, where the target policy is explicitly defined by the exponential weighting of the reference policy. The DPO loss function, for instance, can be derived by directly taking the logarithm of the optimal policy $\pi^*$ (the one that maximizes the KL-regularized reward objective) and optimizing to match it.
+
+While the full derivation can be complex for Online Policy Mirror Descent, the given gradient `g` is essentially trying to push the current policy $\pi_\theta$ towards the optimal policy $\pi^*$ that we derived earlier. The $R(a) - \tau \log \left( \frac{\pi_\theta(a)}{\pi_{\theta_i}(a)} \right)$ term acts as an effective "advantage" or "Q-value" that the policy gradient is trying to optimize.
+
+# System
+![system](system.png)
+
+# side cars
+![alt text](image.png)
+
+## Megatron
+1. 3D parallelism
+   1. tensor
+   2. pipeline
+   3. data
+
+## vLLM
+### Paged Attention
+- KV cache is 60-80% unused because sequences have varying lengths
+- break KV cache into blocks, allocate on demand rather than one contiguous block of memory
+- need to maintain a block table
+- different sequences can share blocks that are the same prefix - useful in beam search
+
+### Continuous Batching
+- static batching, barrier to wait until all sequences finish
+- dynamic batching, continuous add new incoming requests, when a particular sequence finishes, release resources

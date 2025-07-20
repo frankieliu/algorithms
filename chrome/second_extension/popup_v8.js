@@ -15,13 +15,7 @@ const currentPathSpan = document.getElementById('current-path');
 const createFolderBtn = document.getElementById('create-folder-btn');
 const createFileBtn = document.getElementById('create-file-btn');
 const importDownloadBtn = document.getElementById('import-download-btn');
-const goBackBtn = document.getElementById('go-back-btn'); // Less critical with tree view, but can keep if desired for path bar navigation
-
-// NEW: Export/Import Buttons
-const exportDataBtn = document.getElementById('export-data-btn');
-const importDataBtn = document.getElementById('import-data-btn');
-const importFileInput = document.getElementById('import-file-input');
-
+const goBackBtn = document.getElementById('go-back-btn');
 
 // File Details elements
 const fileDetailsDiv = document.getElementById('file-details');
@@ -40,13 +34,13 @@ const moveDialog = document.getElementById('move-dialog');
 const moveItemNameSpan = document.getElementById('move-item-name');
 const moveFolderSelect = document.getElementById('move-folder-select');
 const confirmMoveBtn = document.getElementById('confirm-move-btn');
-const cancelMoveBtn = document.getElementById('cancel-move-btn'); // **FIXED THIS LINE**
+const cancelMoveBtn = document.getElementById('cancel-move-btn');
 
 const renameDialog = document.getElementById('rename-dialog');
 const renameOldNameSpan = document.getElementById('rename-old-name');
 const renameNewNameInput = document.getElementById('rename-new-name');
 const confirmRenameBtn = document.getElementById('confirm-rename-btn');
-const cancelRenameBtn = document.getElementById('cancel-rename-btn');
+const cancelRenameBtn = document.getElementById('cancel-rename-btn'); // **FIXED THIS LINE**
 
 const importDialog = document.getElementById('import-dialog');
 const downloadSelect = document.getElementById('download-select');
@@ -79,12 +73,6 @@ async function saveExpandedFolders() {
     await chrome.storage.local.set({ [EXPANDED_FOLDERS_KEY]: expandedFolders });
 }
 
-/**
- * Recursively renders the file and folder hierarchy.
- * @param {string} parentId The ID of the current parent folder to render children from.
- * @param {number} level The current indentation level.
- * @param {HTMLElement} targetElement The HTML element to append children to.
- */
 function renderHierarchy(parentId, level, targetElement) {
     const children = files[parentId].children
         .map(id => files[id])
@@ -524,6 +512,7 @@ function handleDragStart(e) {
     e.dataTransfer.setData('text/plain', draggedItemId);
     e.dataTransfer.effectAllowed = 'move';
     e.target.classList.add('dragging');
+    // console.log('Drag started for:', files[draggedItemId]?.name, 'ID:', draggedItemId); // Less verbose now
 }
 
 function handleDragOverItem(e) {
@@ -677,91 +666,8 @@ function handleDragEnd(e) {
     }
     document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
     draggedItemId = null;
+    // console.log('Drag ended.'); // Less verbose now
 }
-
-// --- NEW FUNCTIONS FOR EXPORT/IMPORT ---
-
-async function exportData() {
-    try {
-        const dataToSave = {
-            files: files,
-            expandedFolders: expandedFolders
-        };
-        const jsonString = JSON.stringify(dataToSave, null, 2); // Pretty print JSON
-
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-
-        // Create a temporary anchor element to trigger download
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'virtual_file_explorer_data.json';
-        document.body.appendChild(a); // Append to body to make it clickable
-        a.click(); // Programmatically click the link to trigger download
-        document.body.removeChild(a); // Clean up
-        URL.revokeObjectURL(url); // Release the object URL
-
-        alert('Data exported successfully!');
-    } catch (error) {
-        console.error('Error exporting data:', error);
-        alert('Failed to export data. Check console for details.');
-    }
-}
-
-function triggerImport() {
-    // Programmatically click the hidden file input
-    importFileInput.click();
-}
-
-async function importData(event) {
-    const file = event.target.files[0];
-    if (!file) {
-        return; // No file selected
-    }
-
-    if (file.type !== 'application/json') {
-        alert('Please select a valid JSON file.');
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = async (e) => {
-        try {
-            const importedData = JSON.parse(e.target.result);
-
-            // Basic validation of imported data structure
-            if (importedData && importedData.files && importedData.expandedFolders) {
-                // Confirm with user before overwriting
-                if (confirm('Importing data will overwrite your current file explorer data. Are you sure?')) {
-                    files = importedData.files;
-                    expandedFolders = importedData.expandedFolders;
-                    await saveFilesToStorage();
-                    await saveExpandedFolders();
-                    renderFileList(); // Re-render with imported data
-                    hideItemDetails(); // Hide details as current selection might be invalid
-                    alert('Data imported successfully!');
-                }
-            } else {
-                alert('Invalid JSON file format. Please select a file exported from this extension.');
-            }
-        } catch (error) {
-            console.error('Error importing data:', error);
-            alert('Failed to import data. Ensure it is a valid JSON file. Check console for details.');
-        } finally {
-            // Clear the file input value to allow importing the same file again if needed
-            importFileInput.value = '';
-        }
-    };
-
-    reader.onerror = () => {
-        console.error('Error reading file:', reader.error);
-        alert('Error reading file. Check console for details.');
-    };
-
-    reader.readAsText(file);
-}
-
 
 // --- Event Listeners ---
 createFolderBtn.addEventListener('click', createFolder);
@@ -779,11 +685,6 @@ cancelMoveBtn.addEventListener('click', () => moveDialog.style.display = 'none')
 
 confirmImportBtn.addEventListener('click', importDownload);
 cancelImportBtn.addEventListener('click', () => importDialog.style.display = 'none');
-
-// NEW: Event listeners for Export/Import
-exportDataBtn.addEventListener('click', exportData);
-importDataBtn.addEventListener('click', triggerImport); // Button click triggers hidden input
-importFileInput.addEventListener('change', importData); // Hidden input change handles file selection
 
 // --- Initialization ---
 async function initializeExplorer() {

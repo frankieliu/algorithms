@@ -268,9 +268,18 @@ While the full derivation can be complex for Online Policy Mirror Descent, the g
 
 # System
 ![system](system.png)
+1. high level
+   1. training phase
+   2. rollout phase
+1. particulars
+   1. partial rollouts
 
 # side cars
 ![alt text](image.png)
+1. high level
+   1. megatron - training phase
+   1. vLLM - rollout phase
+
 
 ## Megatron
 1. 3D parallelism
@@ -288,3 +297,29 @@ While the full derivation can be complex for Online Policy Mirror Descent, the g
 ### Continuous Batching
 - static batching, barrier to wait until all sequences finish
 - dynamic batching, continuous add new incoming requests, when a particular sequence finishes, release resources
+
+## mooncake
+![alt text](image-1.png)
+1. Terminology
+   1. TTFT - time to first token
+   1. TBT - time between token
+   1. MFU - model flop utilization
+1. Principles
+   1. Reuse KV cache as much as possible - inc. TTFT
+   1. Maximize number of token in each batch - inc. TBT
+1. For each request, Conductor:
+   1. select a prefill and decoder
+   1. transfer as much of the KV external to prefill
+   1. prefill in blocks, stream to decoder
+   1. load KV cache, add request to cont. batching
+1. Selection process is complex
+   1. main objective is to reuse KV
+   1. TTFT is a constraint
+   1. conductor needs to predict usage
+      1. replicate hot blocks to avoid congestion
+      1. swap out cold blocks
+   1. also constrained by available DRAM in prefill
+1. Decoding stage has separate goal
+   1. main goal is to aggregate as many tokens
+   1. constrained by the TBT
+   1. contraineed by amount of VRAM available

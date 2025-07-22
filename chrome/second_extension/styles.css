@@ -1,0 +1,212 @@
+body {
+    font-family: Arial, sans-serif;
+    width: 400px;
+    padding: 10px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+h1 {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.path-bar {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #e9e9e9;
+    border: 1px solid #ddd;
+    font-size: 0.9em;
+}
+
+.toolbar button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.toolbar button:hover {
+    background-color: #0056b3;
+}
+
+.file-list {
+    border: 1px solid #eee;
+    min-height: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.file-item, .folder-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 3px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.file-item:hover, .folder-item:hover {
+    background-color: #e2e2e2;
+}
+
+.file-item.selected, .folder-item.selected {
+    background-color: #cceeff;
+    border-color: #99ddff;
+}
+
+.item-icon {
+    margin-right: 8px;
+    font-size: 1.2em; /* For basic folder/file symbols */
+}
+
+.file-details {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f0f8ff;
+}
+
+.file-details h2 {
+    font-size: 1.1em;
+    margin-top: 0;
+}
+
+.file-details p {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.file-details textarea {
+    width: 95%;
+    height: 80px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.file-details button, .dialog button {
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.file-details button:hover, .dialog button:hover {
+    background-color: #218838;
+}
+
+.file-details #close-details-btn, .dialog #cancel-move-btn, .dialog #cancel-rename-btn, .dialog #cancel-import-btn {
+    background-color: #dc3545;
+}
+
+.file-details #close-details-btn:hover, .dialog #cancel-move-btn:hover, .dialog #cancel-rename-btn:hover, .dialog #cancel-import-btn:hover {
+    background-color: #c82333;
+}
+
+
+.dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.dialog select {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.dialog input[type="text"] {
+    width: 95%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+/* ... (existing styles) ... */
+
+/* Styles for Drag and Drop */
+.dragging {
+    opacity: 0.5;
+    border: 2px dashed #007bff;
+    background-color: #e0f2ff;
+}
+
+.drop-target {
+    outline: 2px solid #28a745;
+    background-color: #d4edda;
+}
+
+/* Ensure folder items are visible for drop targets */
+.folder-item {
+    position: relative; /* Needed for potential ::after or other overlays if desired */
+    /* ... existing folder-item styles ... */
+}
+
+/* ... (existing styles) ... */
+
+.file-item, .folder-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 3px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 0.9em;
+    /* New: Allow padding-left for indentation */
+    padding-left: var(--indentation-level, 5px); /* Default or initial padding */
+}
+
+.file-item:hover, .folder-item:hover {
+    background-color: #e2e2e2;
+}
+
+.file-item.selected, .folder-item.selected {
+    background-color: #cceeff;
+    border-color: #99ddff;
+}
+
+.item-icon {
+    margin-right: 8px;
+    font-size: 1.2em; /* For basic folder/file symbols */
+}
+
+/* New: Styles for expand/collapse icon */
+.folder-toggle {
+    margin-right: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    width: 15px; /* Give it a fixed width to prevent text reflow */
+    text-align: center;
+}
+
+/* ... (rest of your styles) ... */

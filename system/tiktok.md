@@ -73,3 +73,10 @@ Different goals
     - before sending final compensation team
 
 3-1 - have to figure out 
+
+transcoding scheduling system
+effienciency
+
+limited transcoding resource
+transcoding will reduce bit rate
+bit rate user experience

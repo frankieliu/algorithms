@@ -1,4 +1,3 @@
-# from Gemini
 The paper "KIMI K1.5: Scaling Reinforcement Learning with LLMs" introduces Kimi k1.5, a new multi-modal Large Language Model (LLM) trained using **Reinforcement Learning (RL)**. The Kimi team aims to overcome the data limitations of traditional LLM pretraining by allowing the model to generate its own training data through exploration with rewards.
 
 ---
@@ -8,10 +7,13 @@ The paper "KIMI K1.5: Scaling Reinforcement Learning with LLMs" introduces Kimi 
 The paper highlights several core ingredients in the development of Kimi k1.5:
 
 * **Long Context Scaling:** Kimi k1.5 scales the context window for RL training to 128k tokens. The research indicates that increased context length leads to continuous performance improvements. A key innovation here is the use of **partial rollouts** for improved training efficiency, which involves reusing large portions of previous trajectories to sample new ones, reducing the cost of re-generating from scratch.
+
 * **Improved Policy Optimization:** The model uses a variant of **online mirror descent** for robust policy optimization, specifically formulated for long-Chain of Thought (CoT) scenarios. This is further enhanced by effective sampling strategies, the introduction of a **length penalty**, and optimized data recipes.
 
 * **Simplistic Framework:** Unlike prior approaches that often rely on complex techniques like Monte Carlo tree search, value functions, or process reward models, Kimi k1.5 achieves strong performance with a more straightforward RL framework. The ability to scale context length allows the learned CoTs to exhibit properties of planning, reflection, and correction.
+
 * **Multimodality:** Kimi k1.5 is trained on both text and vision data, enabling it to reason jointly across these modalities.
+
 * **Long2short Methods:** The paper also presents "long2short" methods, which leverage techniques developed for long-CoT models to enhance the performance of short-CoT models. These methods include **model merging**, **shortest rejection sampling**, **Direct Preference Optimization (DPO)**, and a dedicated **long2short RL** phase.
 
 ---
@@ -44,8 +46,19 @@ Kimi k1.5 demonstrates **state-of-the-art reasoning performance** across multipl
 
 The overall development of Kimi k1.5 consists of several stages:
 
-1.  **Pretraining:** A multi-stage process involving vision-language pretraining, cooldown for consolidating capabilities, and long-context activation up to 131,072 tokens.
+1.  **Pretraining:** A multi-stage process involving     
+    1. vision-language pretraining
+       1. first text
+       1. interleaves image and text
+       1. only visual tower weights are updated
+       1. both visual and language models unfrozen
+    1. cooldown for consolidating capabilities
+       1. introduce synthetic data
+       1. augment synthetic code/math 
+    1. long-context activation up to 131,072 tokens.
+       1. upsampled with longer context training data
 2.  **Vanilla Supervised Fine-tuning (SFT):** Building a corpus for non-reasoning tasks.
+    1.500k Q&A, 200k coding, 200k math and sci, 5k creative, 20k long context summarization, 1m text-vision
 3.  **Long-CoT Supervised Fine-tuning.**
 4.  **Reinforcement Learning.**
 
@@ -54,8 +67,7 @@ The overall development of Kimi k1.5 consists of several stages:
 The paper concludes that Kimi k1.5 establishes a simplistic yet effective RL framework by leveraging long context scaling and improved policy optimization, demonstrating that LLMs can effectively scale their training data through learning to explore with rewards, leading to significant advancements in reasoning capabilities.
 
 ---
-
-Kimi:
+[SKIP TO SYSTEM](#system)
 
 # Long context scaling
 - 128k token context window
@@ -83,11 +95,11 @@ Kimi:
 
 ## Example mapping
 1. $\phi(x)  = x \log x$
-1. $\grad \phi = \log x + 1$
+1. $\nabla \phi = \log x + 1$
 1. Can think of $\log$ as mapping probabilities to log probability
 
 ## LLM
-1. policy \pi(y,z|x) represent the probability of generating a z (CoT) and final answer y, given input x.
+1. policy $\pi(y,z|x)$ represent the probability of generating a $z$ (CoT) and final answer $y$, given input $x$.
 
 
 # Problem statement
@@ -160,7 +172,7 @@ Kimi:
 ## Direct integration of length penalty (long2short method)
 - adds length penalty in the reward funciton
 - long2short RL: distinct RL phase with
-  - strong length penalties and re
+  - strong length penalties 
   - reduced max generation lengths
   - training for conciseness AFTER initial reasoning capabilities are established
 
@@ -173,7 +185,6 @@ Kimi:
 - Sophisticated CoT RM
 - Online Policy Mirror Descent
 - Direct integration of length penalties with long2short methods
-
 
 # Derivation of the grad of the surrogate loss
 You're asking about the core of how policies are updated in RL algorithms that incorporate KL regularization, like the one used in the Kimi paper. The "surrogate loss" is a common term for the objective function that we optimize iteratively to update the policy.
@@ -269,17 +280,24 @@ While the full derivation can be complex for Online Policy Mirror Descent, the g
 # System
 ![system](system.png)
 1. high level
+   1. rollout phase
+      1. generate trajectories store in replay buffer
    1. training phase
-   2. rollout phase
-1. particulars
-   1. partial rollouts
+      1. takes trajectories from replay buffer
+      1. compute gradients
+      1. use RM and code execution service
+1. partial rollouts
+   1. caps length of trajectories
+   1. unfinished trajectories continued on next iteration
+   1. only current iteration requires online computation
+   1. training workers can exclude certain segments can be excluded from loss computation
+   1. stop repeated generation by adding penalty
 
 # side cars
 ![alt text](image.png)
 1. high level
    1. megatron - training phase
    1. vLLM - rollout phase
-
 
 ## Megatron
 1. 3D parallelism
@@ -300,18 +318,39 @@ While the full derivation can be complex for Online Policy Mirror Descent, the g
 
 ## mooncake
 ![alt text](image-1.png)
+
+1. Problems with LLM serving:
+
+   1. diverse workloads:
+      1. input/output length variation
+      1. arrival frequecy
+      1. TTFT and TBT SLO
+   1. maximize throughput
+   1. resource utilization
+      1. make sure GPU/CPU/DRAM/SSD are not idle
+   1. overload scenario
+      1. mooncake freq. overloaded, need to reject requests
+   1. KV cache management (main problem)
+      1. Reuse / Transfer / Storage
+
+1. KV cache stored in paged blocks in CPU memory
+   1. dedup with hashes
+
 1. Terminology
    1. TTFT - time to first token
    1. TBT - time between token
    1. MFU - model flop utilization
+
 1. Principles
    1. Reuse KV cache as much as possible - inc. TTFT
    1. Maximize number of token in each batch - inc. TBT
+
 1. For each request, Conductor:
    1. select a prefill and decoder
    1. transfer as much of the KV external to prefill
    1. prefill in blocks, stream to decoder
    1. load KV cache, add request to cont. batching
+
 1. Selection process is complex
    1. main objective is to reuse KV
    1. TTFT is a constraint
@@ -319,7 +358,170 @@ While the full derivation can be complex for Online Policy Mirror Descent, the g
       1. replicate hot blocks to avoid congestion
       1. swap out cold blocks
    1. also constrained by available DRAM in prefill
+
 1. Decoding stage has separate goal
    1. main goal is to aggregate as many tokens
    1. constrained by the TBT
    1. contraineed by amount of VRAM available
+
+1. Purpose of Prefill node:
+   1. compute the KV cache
+   1. i.e. given a prefix compute the first token
+   1. SLO is the TTFT
+   1. Compute bound
+   1. Use tensor / pipeline parallelism for heavy compute
+1. Purpose of Decoder node:
+   1. given a KV cache
+   1. autoregressive compute the rest of the tokens
+   1. Memory bound - need to use KV Cache in GPU global memory to compute contribution for newly generated tokens
+   1. optimize fetching from KVCache
+      1. KVCache blocks are loaded asynchroniously into VRAM
+
+1. Disaggregated functionality
+   1. 
+# kimi 2.0
+## Muon
+
+1. Apply newton-schulz to normalize the gradient matrix
+
+1. In the example below, began with symmetric matrix
+   1. eigenvalues are positive
+   1. in general, will be both + and - 
+   1. normalization will take them to +1, -1
+   1. ![alt text](image-2.png)
+
+1. why is this *desirable*
+   1. a regularization technique
+      1. not just going steepest descent 
+      1. allowing other weights to adjust
+      1. reduce exploding and vanishing gradient
+   1.  approximates second order methods, normalized matrix is an approximation to the hessian
+   1. smaller singular values "inflate" faster
+      1. less training time
+
+1. doesn't this make things *unstable*?
+   1. only take 5-6 steps in Newton-Schulz
+      1. "partial" orthogonalization
+   1. prior to N-S, $G/|G|_F$ (normalize)
+   1. only applies to 2D matrices
+      1. not biases, embeddings, classifier heads
+      1. still on AdamW
+
+# RL
+1. $\underset{\theta}{\max}\ ⁡ \mathbb{E}_{\left(x , y^{*}\right) \sim \mathcal{D},\ \left( y , z \right) \sim \pi_{\theta}} ⁢ \left[ r ⁢ \left( x , y , y^{*} \right) \right]$
+   1. Draw $y,z$ and use reward to $r$ to guide training.
+   1. Emphasis on $z$, CoT.
+   1. Note there is no $r(..z..)$, i.e. rewards are not a function of intermediate steps
+1. $z$ can be long, kimi targets 128k tokens
+1. $\underset{\theta}{\max} \ \mathbb{E}_{\left(\right. x , y^{*} \left.\right) \sim \mathcal{D}} \left[\right. \mathbb{E}_{\left(\right. y , z \left.\right) \sim \pi_{\theta}} \left[\right. r \left(\right. x , y , y^{*} \left.\right) \left]\right. - \tau\ \text{KL}\left(\right. \pi_{\theta} \left(\right. x \left.\right) \left|\right. \left|\right. \pi_{\theta_{i}} \left(\right. x \left.\right) \left.\right) \left]\right.$
+   1. KL term keeps $\pi_\theta$ close to $\pi_{\theta_i}$
+      1. Note this process is iterative, so don't let the
+         current model deviate too much from previous model
+1. There is a closed form solution:
+$\pi^{*} ⁢ \left(\right. y , z \left|\right. x \left.\right) = \pi_{\theta_{i}} ⁢ \left(\right. y , z \left|\right. x \left.\right) ⁢ \exp ⁡ \left(\right. r ⁢ \left(\right. x , y , y^{*} \left.\right) / \tau \left.\right) / Z .$
+   1. The optimum policy is the old policy weighed a softmax based on the reward (as compared with other trajectories beginning with the $x$ and not necessarily ending at $y^*$)
+   1. If we have this closed form solution aren't we done?  No, partition function $Z$ is usually intractable, and must be calculated anew for each $x$.
+1. Surrogate Loss
+   1. think of this as the L2 loss, i.e. how far is this from the optimum policy
+$L \left(\right. \theta \left.\right) =
+ \mathbb{E}_{\left(\right. x , y^{*} \left.\right) \sim \mathcal{D}} ⁢ \left[\right. \mathbb{E}_{\left(\right. y , z \left.\right) \sim \pi_{\theta_{i}}}
+  ⁢ \left[\right. \left( r ⁢ \left(\right. x , y , y^{*} \left.\right) - \tau ⁢ \log ⁡ Z - \tau ⁢ \log ⁡ \frac{\pi_{\theta} ⁢ \left(\right. y , z \left|\right. x \left.\right)}{\pi_{\theta_{i}} ⁢ \left(\right. y , z \left|\right. x \left.\right)} \right)^{2} \left]\right. \left]\right. .$
+   1. Note that this loss is in mirror space already, not euclidean in probability space, but exponential in gradient space, i.e. you take the log of probabilities
+1. Kimi paper claims that the gradient of the loss looks like this:
+$\frac{1}{k} \sum_{j = 1}^{k} \left(\right. \nabla_{\theta} \log \pi_{\theta} \left(\right. y_{j} , z_{j} \left|\right. x \left.\right) \left(\right. r \left(\right. x , y_{j} , y^{*} \left.\right) - \bar{r} \left.\right) - 
+\frac{\tau}{2} \nabla_{\theta} \left( \log \frac{\pi_{\theta} ⁢ \left(\right. y_{j} , z_{j} \left|\right. x \left.\right)}{\pi_{\theta_{i}} ⁢ \left(\right. y_{j} , z_{j} \left|\right. x \left.\right)} \right)^{2} \left.\right) .$ 
+   1. This doesn't seem to be derived from the Surrogate Loss
+   1. If one derives directly from the Surrogate Loss it looks like:
+
+   $$g = \mathbb{E}_{y,z \sim \pi_{\theta_i}} \left[ \alpha \nabla_{\theta} \log \pi_{\theta}(y,z|x) \left( r(x, y, y^*) - \tau \log \frac{\pi_{\theta}(y,z|x)}{\pi_{\theta_i}(y,z|x)} \right) \right]$$
+
+   1. In any case, there are familiar terms, $r-\bar{r}$, but this is taken over all sampled trajectories, and there is a regularization term, making sure that the policy doesn't deviate too much from the previous one.
+   1. Note that it is off-policy in the sense that the updates are derived from trajectories under $\theta_i$.
+1. Kimi paper explicitly does not want to assign any credit to intermediate steps.  
+   1. Recall that $V(s)$ tries to assign a value to a partial result, and it will penalize a path that leads to a wrong result
+   1. Authors claim that such path is essential for the model to learn how to self correct
+1. For fun just compare against DeepSeekMath:
+   1. Differences:
+      1. DSM gives rewards at each step
+      1. Advantage normalized by the group mean and std
+         1. kimi only take the mean
+      1. There is penalty given to longer sequences
+      1. L1 vs L2 of the KL term
+      1. Takes importance sampling into consideration
+         1. since trajectories come from old policy 
+$$
+\mathcal{J}_{G ⁢ R ⁢ P ⁢ O}⁢ \left(\right. \theta \left.\right) =
+$$
+
+$$ \mathbb{E}
+ \left[\right.
+   q \sim P⁢ \left(\right. Q \left.\right), \left\{ o_{i} \right\}_{i = 1}^{G} \sim \pi_{\theta_{o ⁢ l ⁢ d}}
+⁢   \left(\right. O \left|\right. q \left.\right)
+ \left]\right.
+ \frac{1}{G} \sum_{i = 1}^{G}
+ \frac{1}{\left|\right. o_{i} \left|\right.} \sum_{t = 1}^{\left|\right. o_{i} \left|\right.}
+$$ 
+
+$$\left\{\right. \frac{
+   \pi_{\theta}⁢ \left(\right. o_{i , t} \left|\right. q , o_{i , < t} \left.\right)
+}
+{
+   \pi_{\theta_{o ⁢ l ⁢ d}} ⁢ \left(\right. o_{i , t} \left|\right. q , o_{i , < t} \left.\right)
+}
+\hat{A}_{i , t} - \beta \mathbb{D}_{K ⁢ L}
+ \left[\right. \pi_{\theta} \left|\right. \left|\right. \pi_{r ⁢ e ⁢ f} \left]\right. \left.\right\}
+$$
+
+$$
+\hat{A}_{i,t}=\frac{r_i−\mu(𝐫)}{\sigma(r)}
+$$
+   
+# Length penalty
+
+$$r_l \left(\right. i \left.\right) =$$
+\[ \begin{align} 
+\lambda & \> \> \> \text{If} \> r⁢ \left(\right. x , y_{i} , y^{*} \left.\right) = 1 \\
+\min  \left(\right. 0 , \lambda \left.\right) & \> \> \> \text{If} \> r \left(\right. x , y_{i} , y^{*} \left.\right) = 0
+\end{align}
+\]
+\[
+\lambda = 0.5 - \frac{len ⁢ \left(\right. i \left.\right) - min ⁢ _ ⁢ len}{max ⁢ _ ⁢ len - min ⁢ _ ⁢ len}
+\]
+1. if r=1, then -0.5, 0.5 from maxlen, minlen
+1. if r=0, then -0.5, 0   
+
+[JUMP TO LONG2SHORT](#long2short)
+# Sampling Strategies (skip)
+1. Curriculum sampling: easy to hard
+1. Prioritized sampling: prioritize where models under performs
+
+# CoT RM (skip)
+1. 800K SFT Kimi
+
+# Long2Short
+## Model merging
+1. average the weights from Long CoT with Short CoT
+## Rejection sampling
+1. samples N=8 times and keep the shortest correct answer
+## DPO
+1. Use Long CoT, use DPO shortest (good) vs longest (bad)
+
+   1. $$J(\pi) = \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi(\cdot|x)} [r(x, y)] - \beta \text{KL}(\pi(\cdot|x) || \pi_{ref}(\cdot|x))$$
+
+   1. $$\pi^*(y|x) = \pi_{ref}(y|x) \exp\left(\frac{1}{\beta} r(x, y)\right)/Z$$
+
+   1. $$r(x, y) = \beta \log \frac{\pi^*(y|x)}{\pi_{ref}(y|x)} + \beta \log Z(x)$$
+
+   1. $$P(y_w \succ y_l | x) = \sigma(r(x, y_w) - r(x, y_l))$$
+
+   1. $$r(x, y_w) - r(x, y_l) = \beta \left( \log \frac{\pi^*(y_w|x)}{\pi_{ref}(y_w|x)} - \log \frac{\pi^*(y_l|x)}{\pi_{ref}(y_l|x)} \right)$$
+
+   1. To align $\pi_\theta$ , we maximize the likelihood of the observed preferences in the dataset $\mathcal{D} = \{(x, y_w, y_l)\}$. This leads to a **binary cross-entropy loss function**:
+
+$$L_{DPO}(\theta) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma\left( r_\theta(y_w|x) - r_\theta(y_l|x) \right) \right]$$
+
+   1. No RM, no V(s), straight forward classification loss
+
+## Long2Short
+1. standard RL
+1. separate long2short RL phase apply length penalty

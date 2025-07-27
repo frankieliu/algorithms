@@ -1,4 +1,63 @@
+# Abin Shahad
+Training and serving team
+2-3 years at apple
+- straight line
+- work with yahoo oldies
+- learn a lot from them
+- linkedin first big tech
+  - everything perfect
+  - not like that at all
+  - kubernetes to linked
+  - google did an amazing
+  - open source community
+  - how to bring something impactful
+    large at a company scale
+  - at scale
+  - apple
+    - operates own economy
+    - not one top down
+    - every org decides what they need to do
+    - weakness and strength
+    - vendor
+    - databricks sending mandate
+    - you must this
+      - decide on their own
+
+# Zhiheng Xie
+Apple 5 and half year
+Media processing stuff
+Traditional backend distributed
+Transfer to new team
+ML Platform
+Building platform for GPU training
+Runtime layer
+General views in different domains
+AI/ML
+Traditional - lack domain knowledge
+Keep the use case / scenario
+Understand how people train the model
+Learn it everyday
+Don't make assumption
+Domain specific things
+Communicate to everyone
+Apple ML - LLM things building own LLM
+- internally, put all resources on it
+Collaborative way
+- everybody
+- each person has a specific project
+  - talk to neighbor teams
+  - need their input
+- ML PT (platform)
+- HPC runtime (one of the teams)
+  - Li's manager has
+    - 3 Teams
+    - GPU training
+    - computer cluster K8s
+    - control plane - record/metrics
+    - each worker / GPU training
+  - 
 # Outline
+
 You asked:
 ----------
 

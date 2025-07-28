@@ -142,9 +142,7 @@ Handle Redirect
 
 There are two ways we can handle this redirect, with one being simpler and the other being more robust.
 
-### 
-
-Good Solution: Client side redirect
+#### Good Solution: Client side redirect
 
 ##### Approach
 
@@ -154,9 +152,7 @@ The simplest thing we can do is send over a redirect URL with each ad that's pla
 
 The downside with this approach is that users could go to an advertiser's website without us knowing about it. This could lead to discrepancies in our click data and make it harder for advertisers to track the performance of their ads. Sophisticated users could grab the url off of the page and navigate to it directly, bypassing our click tracking entirely. Someone would probably build a browser extension to do this.
 
-### 
-
-Great Solution: Server side redirect
+#### Great Solution: Server side redirect
 
 ##### Approach
 
@@ -174,9 +170,7 @@ Our users were successfully redirected, now let's focus on the advertisers. They
 
 Once our /click endpoint receives a request what happens next?
 
-### 
-
-Bad Solution: Store and Query From the Same Database
+#### Bad Solution: Store and Query From the Same Database
 
 ##### Approach
 
@@ -196,9 +190,7 @@ Store and Query From the Same Database
 
 Frankly, at our scale, this solution sucks. The database will quickly become a bottleneck as we scale up to 10k clicks per second. The GROUP BY query will be slow and inefficient, and we won't be able to provide low latency queries to advertisers -- breaking our non-functional requirement.
 
-### 
-
-Good Solution: Separate Analytics Database with Batch Processing
+#### Good Solution: Separate Analytics Database with Batch Processing
 
 ##### Approach
 
@@ -243,9 +235,7 @@ This solution works, and it works pretty well, but there are several key challen
 
 While the simple inclusion of a queue between the click processor and the event store would help with the scalability issue, it would not solve the latency problem. To address both of these challenges, we can introduce a stream processing design that processes events in real-time.
 
-### 
-
-Great Solution: Real-time Analytics With Stream Processing
+#### Great Solution: Real-time Analytics With Stream Processing
 
 ##### Approach
 
@@ -295,6 +285,15 @@ With the above scaling strategies, we should be able to handle a peak of 10k cli
 
 To solve the hot shard problem, we need a way of further partitioning the data. One popular approach is to update the partition key by appending a random number to the AdId. We could do this only for the popular ads as determined by ad spend or previous click volume. This way, the partition key becomes AdId:0-N where N is the number of additional partitions for that AdId.
 
+browser -> LB/API gateway -> (1)
+                          -> (2)
+
+(1) -> Ad placement -> Ad DB (AdId / RedirectUrl / metadata)
+
+(2) -> Click Processor -> Kafka (/AdId) -> Flink (/AdId) -> OLAP DB -> Analytics Service -> Analyst Browser
+
+ OLAP DB (AdId / AdvertiserId PK / Minute SK / Click Count)
+
 Scaling
 
 ### 2) How can we ensure that we don't lose any click data?
@@ -319,6 +318,9 @@ Despite our best efforts with the above measures, things could still go wrong. T
 
 At the end of the stream, alongside the stream processors, we can also dump the raw click events to a data lake like S3. Flink supports this through its FileSystem interface and various connectors, allowing for both batch and real-time data processing outputs to be stored directly in S3 buckets. Then, as with the "good" answer in "Advertisers can query ad click metrics over time at 1-minute intervals" above, we can run a batch job that reads all the raw click events from the data lake and re-aggregates them. This way, we can compare the results of the batch job to the results of the stream processor and ensure that they match. If they don't, we can investigate the discrepancies and fix the root cause while updating the data in the OLAP DB with the correct values.
 
+-> Click Processor -> Kafka -> Flink -> OLAP DB
+                            -> Raw Click Data (s3) -> (cron) Spark -> Reconciliation Worker -> OLAP DB
+
 Reconciliation
 
 This essentially combines our two solutions, real-time stream processing and periodic batch processing, to ensure that our data is not only fast but also accurate.
@@ -329,9 +331,7 @@ While modern systems have advanced fraud detection systems, which we have consid
 
 Let's breakdown a couple of ways to do this:
 
-### 
-
-Bad Solution: Add userId To Click Event Payload
+### Bad Solution: Add userId To Click Event Payload
 
 ##### Approach
 
@@ -345,9 +345,7 @@ This approach has some serious limitations. First, it requires that all users ar
 
 Consider retargeting, where we intentionally show the same ad to the same user multiple times over an extended period. We need to amend our problem statement to say that we only count one click per user per ad _instance_. This is a subtle but important distinction, and our current solution does not account for it.
 
-### 
-
-Great Solution: Generate a Unique impression ID
+### Great Solution: Generate a Unique impression ID
 
 ##### Approach
 
@@ -395,6 +393,9 @@ Pre-aggregating the data in the OLAP database is a common technique to improve q
 Putting it all together, one final design could look like this:
 
 Final Design
+
+Add a cache containing an impressionId that is generated by the system.
+Add impressionId that is signed with your private key, and can decrypt with public key, so can check the impressionId is the same.
 
 ## [What is Expected at Each Level?](https://www.hellointerview.com/blog/the-system-design-interview-what-is-expected-at-each-level)
 
@@ -446,514 +447,4 @@ Start Quiz
 
 Mark as read
 
-Comment
-
-Anonymous
-
-Posting as Frankie Liu
-
-​
-
-Sort By
-
-Old
-
-Sort By
-
-G
-
-GrowingLavenderMockingbird910
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv5wvetj0049hhq968x01ijq)
-
-Thank you for a great post.
-
-For de-duping -
-
-" When the user clicks on the ad, the browser sends the impression ID along with the click data. This way we can dedup clicks based on the impression ID."
-
-The final diagram seems to indicate that the Ad placement service is populating the cache with impressions ids, which would then disable duplicate checks by click processing service. Is that a correct understanding ?
-
-Show more
-
-0
-
-Reply
-
-![Evan King](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fevan-headshot.36cce7dc.png&w=96&q=75)
-
-Evan King
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6sww3j002i3mfsk45evju4)
-
-Yah good catch! Left over arrow there, let me remove :)
-
-Show more
-
-0
-
-Reply
-
-D
-
-daspiffy
-
-[• 11 months ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clz59dtaz00hh3u0lsdansyty)
-
-In practice, we are probably either sending some encrypted data or else an encrypted key to do a quick look up of some data for the click, which would include the impression id. In the former case, we would need to decrypt the data but would not need to hit the cache to look up the impression id. The latter is essentially what is proposed here. The redirect URL could also be included in this data, but if it is encrypted directly then this will limit the size of the redirect URL and we may not want to store the redirect URL in our redis cache because it is potentially a significant increase in the storage.
-
-I guess this is out of scope, but for some types of ads we may want to support multiple clicks (e.g. 2 or 3) per ads in which case we would rely on some debouncing logic on the client and at processing as well as still maintaining a maximum number of clicks per impression.
-
-Show more
-
-0
-
-Reply
-
-V
-
-VocalSilverClam610
-
-[• 6 months ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-cm5fhge5o0066tqtqa4epyp7d)
-
-you probably want to include adId in the signed impression data {adid:xyz,impressionid: abc} and sign it, otherwise they can still harvest a lot of valid signed impressionids and send them in
-
-Show more
-
-1
-
-Reply
-
-S
-
-ShinyOliveBonobo711
-
-[• 2 months ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-cmayv29fx025kad08aqjkpl6p)
-
-I think it's the Click Processor Svc that put the impression ID into the cache after the browser sends the first request for the impression ID and if the same impression ID already exists in the cache, the Click Processor Svc will just skip sending it to Kinesis. As you can see the Click Processor Svc takes care of all the use cases around the real clicks and it even looks up the redirect url after the user clicks the ad; the Ad placement service is dealing with a separate concern - deciding what Ads to display for the user and generate the impression ID(and the signature) for the FE to display the Ad.
-
-Show more
-
-0
-
-Reply
-
-![dib](https://lh3.googleusercontent.com/a/ACg8ocIhxfR7BWhsP2yzRbOC5Jr8s3drHa5liTiQD8vz3ihQat9LZA=s96-c)
-
-dib
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv600n5d004d90kpwocs8mze)
-
-Very informative. Thanks a lot!! Good Solution - "Second, the system is not scalable. If we have a sudden spike in clicks, the system will not be able to handle the load." -
-
-Are you implying that the Cassandra cluster wont be able to handle the spikes even though it's meant for faster writes. Is my understanding right or I am missing something?
-
-Show more
-
-0
-
-Reply
-
-![Evan King](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fevan-headshot.36cce7dc.png&w=96&q=75)
-
-Evan King
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6sy8cl002z551t1s3a66fy)
-
-Cassandra scales linearly with ~4k TPS per instance (I believe), so it should. But in theory (maybe academic) it would not scale quickly enough if we had a sudden burst of write traffic for some reason.
-
-Show more
-
-1
-
-Reply
-
-A
-
-AtomicIvoryUrial668
-
-[• 3 months ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-cm90axi3q01ekad08rmpl2e21)
-
-I was gonna ask the same question because I would guess a well scaled thin layer of click processor (Which just relays clicks to cassandra) and well scaled cassandra should be able to cope with 10k clicks.
-
-I love the content btw team @ hellointerview
-
-Show more
-
-0
-
-Reply
-
-![Apoorv Gupta](https://lh3.googleusercontent.com/a/ACg8ocLtDeHnvwoH7ycKpx5vFTieLUlafrPEWSsW3hJuIaEfLIQXaA=s96-c)
-
-Apoorv Gupta
-
-[• 18 days ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-cmcvhfczu0e9ead07ynmfuffh)
-
-Cassandra 4.0 went up to 51k ops/s (80% writes, 20% reads) in May 2025. 30 ms read/write latency (p99)
-
-https://www.datastax.com/blog/apache-cassandra-benchmarking-40-brings-heat-new-garbage-collectors-zgc-and-shenandoah
-
-Clusters were composed of 3 nodes using r3.2xlarge instances and a single stress node using a c3.2xlarge instance.
-
-https://instances.vantage.sh/aws/ec2/r3.2xlarge
-
-Show more
-
-0
-
-Reply
-
-![AlexThe Great](https://lh3.googleusercontent.com/a/ACg8ocIYuP3k-GDwAnzFeM36yGfbHGpg6S9FlWyKpfUR6WGBTZlVjg=s96-c)
-
-AlexThe Great
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv61d40n006chhq950quoagx)
-
-This is awesome. You are using Kappa architecture. Could you please add some details on why Kappa instead of Lambda architecture. That will be a good point to discuss in the interview, as per my guess.
-
-Show more
-
-2
-
-Reply
-
-![Evan King](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fevan-headshot.36cce7dc.png&w=96&q=75)
-
-Evan King
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6szf9c0031551tw0mhb79m)
-
-Would be a good deep dive indeed! May add here, may add a separate deep dive page in the future.
-
-Show more
-
-1
-
-Reply
-
-Y
-
-YabberingBeigeArmadillo825
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6wictl003n551t81kz4fy3)
-
-Why is this not lambda already? There's a streaming layer and batch layer.
-
-Show more
-
-3
-
-Reply
-
-![AlexThe Great](https://lh3.googleusercontent.com/a/ACg8ocIYuP3k-GDwAnzFeM36yGfbHGpg6S9FlWyKpfUR6WGBTZlVjg=s96-c)
-
-AlexThe Great
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6zlmcw0007ij3buky4bi8i)
-
-Thank you @Evan King. Loving your material. I wish you add more Common Problems.
-
-@AutomaticEmeraldErmine112: Check the difference between Lambda and Kappa. You will "Automatically" understand :D.
-
-Show more
-
-0
-
-Reply
-
-![Evan King](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fevan-headshot.36cce7dc.png&w=96&q=75)
-
-Evan King
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6zmtoj0009ij3b4u5ixbom)
-
-We're working on it! Should actually have a new one to post here very shortly. Glad you find them valuable
-
-Show more
-
-0
-
-Reply
-
-Z
-
-zhaoyt0303
-
-[• 6 months ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-cm6ct3o5f02r6sagcjoe5lfn8)
-
-Since we have a batch layer and a streaming layer, why it is not a lambda?
-
-Show more
-
-1
-
-Reply
-
-![Vincent Chee](https://lh3.googleusercontent.com/a/ACg8ocKBSxDGks7TTHMVEg4LL7WNeT1l2VHgxecrgaGoV1p_Vld86w=s96-c)
-
-Vincent Chee
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv93xstg005vdr821wq3tbfg)
-
-This is not Kappa, Kappa unifies both streaming and batching into a single computation layer.
-
-Show more
-
-1
-
-Reply
-
 C
-
-ChemicalVioletKingfisher308
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clvvm4beq0013d00qq9lb753k)
-
-As per my understanding, if we used same Flink for recalculation then it would have been a Kappa architecture. But we are introducing another component for batch processing, so this would fall under Lambda architecture.
-
-Show more
-
-9
-
-Reply
-
-C
-
-ConcreteBlushMastodon771
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6bf3qi000y551ta2yei07g)
-
-Would you ask someone without data pipeline experiences this question? The great solution requires knowledge of Flink / Spark, which can be foreign to people outside of the data processing domain. Wouldn’t it stop you from collecting proper signals? A staff engineer in other infra spaces might not be familiar with these tools.
-
-Show more
-
-6
-
-Reply
-
-![Stefan Mai](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fstefan-headshot.05026b70.png&w=96&q=75)
-
-Stefan Mai
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6c4w5d00048vvvpfra78xb)
-
-There are other great solutions which don't require a stream processing framework. The underlying concepts are basically the same. Let us know if you have questions about this!
-
-Show more
-
-0
-
-Reply
-
-C
-
-ConcreteBlushMastodon771
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6s7qo4002l551t5ajwf7of)
-
-I see. Flink is basically an event aggregator in this design, right? It groups the events by ad id then by timestamps at minute granularity. If I am not familiar with Flink and suggested we could use a queue worker that does this, I assume it’s still a good answer?
-
-Show more
-
-1
-
-Reply
-
-![Stefan Mai](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fstefan-headshot.05026b70.png&w=96&q=75)
-
-Stefan Mai
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6uvbva000c8vvvfg6n5ylf)
-
-Yeah - just be prepared to talk about how that grouping happens logistically. Talking about consistent hashes, fault-tolerance, etc.
-
-Show more
-
-1
-
-Reply
-
-C
-
-ConcreteBlushMastodon771
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clvrpcr4u00fj149a12oq82di)
-
-Thank you. I was recently asked this question in my interview, and I aced it with this key and all the discussions in comments! You guys rock!
-
-Show more
-
-0
-
-Reply
-
-B
-
-BoldBrownHeron815
-
-[• 9 months ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-cm1sbnzbl00g4tj15vd2gj4wk)
-
-Hey, which company was that
-
-Show more
-
-1
-
-Reply
-
-S
-
-SeriousScarletLungfish451
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6dlavf00068vvvx38k9wkl)
-
-Thank for a another great post. These are by far the best system design resources.
-
-Quick general question on usage of tools like Flink on these system design interviews. Up to what extent should we know about these tools? What if we proposed an in-house microservice that does the real-time data processing instead of Flink? Would that be a valid approach? Thanks!
-
-Show more
-
-1
-
-Reply
-
-![Evan King](https://www.hellointerview.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fevan-headshot.36cce7dc.png&w=96&q=75)
-
-Evan King
-
-[• 1 year ago](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#comment-clv6t1ps1002m3mfs3w987474)
-
-It depends on the level! You are certainly not required to know all technologies in depth; that would be impossible. However, for more senior levels, in particular, you are expected to be able to demonstrate depth in areas where you have experience. This could involve Flink for some, Kafka/Kinesis for others, or even just understanding how to handle idempotency, etc. You do not need to know everything, just enough instances of depth that could come from areas not even included in the potential deep dives.
-
-Show more
-
-1
-
-Reply
-
-Show All Comments
-
-###### The best mocks on the market.
-
-Now up to 25% off
-
-[Learn More](https://www.hellointerview.com/mock/overview)
-
-On This Page
-
-[
-
-Understanding the Problem
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#understanding-the-problem)[
-
-Functional Requirements
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#functional-requirements)[
-
-Non-Functional Requirements
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#non-functional-requirements)[
-
-The Set Up
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#the-set-up)[
-
-Planning the Approach
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#planning-the-approach)[
-
-System Interface
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#system-interface)[
-
-Data Flow
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#data-flow)[
-
-High-Level Design
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#high-level-design)[
-
-1) Users can click on ads and be redirected to the target
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#1-users-can-click-on-ads-and-be-redirected-to-the-target)[
-
-2) Advertisers can query ad click metrics over time at 1 minute intervals
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#2-advertisers-can-query-ad-click-metrics-over-time-at-1-minute-intervals)[
-
-Potential Deep Dives
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#potential-deep-dives)[
-
-1) How can we scale to support 10k clicks per second?
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#1-how-can-we-scale-to-support-10k-clicks-per-second)[
-
-2) How can we ensure that we don't lose any click data?
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#2-how-can-we-ensure-that-we-dont-lose-any-click-data)[
-
-3) How can we prevent abuse from users clicking on ads multiple times?
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#3-how-can-we-prevent-abuse-from-users-clicking-on-ads-multiple-times)[
-
-4) How can we ensure that advertisers can query metrics at low latency?
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#4-how-can-we-ensure-that-advertisers-can-query-metrics-at-low-latency)[
-
-Final Design
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#final-design)[
-
-What is Expected at Each Level?
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#what-is-expected-at-each-level)[
-
-Mid-level
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#mid-level)[
-
-Senior
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#senior)[
-
-Staff+
-
-](https://www.hellointerview.com/learn/system-design/problem-breakdowns/ad-click-aggregator#staff)
-
-![CTA](/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcta.fea02155.png&w=3840&q=75&dpl=4697f0c32347bfe52e5d7ce2da392178689083cc)
-
-#### Schedule a mock interview
-
-Meet with a FAANG senior+ engineer or manager and learn exactly what it takes to get the job.
-
-[Schedule a Mock Interview](https://www.hellointerview.com/mock/schedule?focus=true)
-
-###### Questions
-
-Meta SWE Interview QuestionsAmazon SWE Interview QuestionsGoogle SWE Interview QuestionsEngineering Manager (EM) Interview Questions
-
-###### Learn
-
-Learn System DesignLearn DSALearn BehavioralLearn ML System DesignGuided Practice
-
-###### Links
-
-FAQPricingGift Mock InterviewsGift PremiumBecome a CoachOur CoachesEmployersHello Interview Premium
-
-###### Legal
-
-Terms and ConditionsPrivacy Policy
-
-###### Contact
-
-About Ussupport@hellointerview.com
-
-7511 Greenwood Ave North Unit #4238 Seattle WA 98103
-
----
-
-© 2025 Optick Labs Inc. All rights reserved.

@@ -1,25 +1,5 @@
 # Design Online Auction
 
-Dealing with Contention
-
-Real-time Updates
-
-[![Evan King](/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fevan-headshot.36cce7dc.png&w=96&q=75&dpl=54716df6571660a7fef9490edd4f3f55e6624b43)
-
-Evan King
-
-Ex-Meta Staff Engineer
-
-](https://www.linkedin.com/in/evan-king-40072280/)
-
-medium
-
-Published Jul 10, 2024
-
----
-
-## Understanding the Problem
-
 **🛍️ What is an online auction?** An online auction service lets users list items for sale while others compete to purchase them by placing increasingly higher bids until the auction ends, with the highest bidder winning the item.
 
 As is the case with all of our common question breakdowns, we'll walk through this problem step by step, using the [Hello Interview System Design Framework](https://www.hellointerview.com/learn/system-design/in-a-hurry/delivery) as our guide. Note that I go into more detail here than would be required or possible in an interview, but I think the added detail is helpful for teaching concepts and deepening understanding.
@@ -569,3 +549,29 @@ For senior candidates, I expect that they recognize that consistency and real-ti
 For staff engineers, I expect them to demonstrate mastery of the core challenges around consistency and real-time updates while also proactively surfacing additional complex considerations. A strong candidate might, unprompted, discuss how ending auctions presents unique distributed systems challenges. They'd explain that while fixed end times seem straightforward, implementing dynamic endings (where auctions extend after late bids) requires careful orchestration to handle clock drift, concurrent termination attempts, and delayed valid bids. They might propose a dedicated scheduling service using tools like Apache Airflow or a custom queue-based solution to manage auction completions reliably. This kind of unprompted deep dive into adjacent problems—whether it's auction completion, fraud prevention, or system failure handling—demonstrates the technical breadth and leadership thinking expected at the staff level. Ultimately, the most important thing is that they lead the conversation, go deep, and show technical accuracy and expertise.
 
 ###### Test Your Knowledge
+
+# Summary Design 
+
+client -> API gateway
+ -> (1)
+ -> (2)
+
+(1) -> Auction Service -> DB (postgres / auctionId)
+       API: getAuction createAuction
+
+(2) -> Producer -> Kafka -> Bid Service -> DB (postgres)
+                            +-> SSE Gateway
+API:createBid
+
+Key points
+
+## DB: auction table keep a column for max bid
+-> can lock a single row to maintain strong consistency
+
+## Kafka and Bid Service /auction ID
+-> hot bids may require sub-dividing auction to multiple workers
+
+## SSE Gateway: Map<auction_id,SSE_connections>
+-> single point for notification
+-> Bid Service posts to pub/sub 
+-> SSE gateway replies back for each new bid in 

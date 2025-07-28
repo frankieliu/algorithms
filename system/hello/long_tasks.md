@@ -18,6 +18,9 @@ Now imagine that instead of just fetching data, we need to generate a PDF report
 
 Sync Processing Problem
 
+client -> server (generate report) -> db
+    long wait
+
 With synchronous processing, the user's browser sits waiting for 45 seconds. Most web servers and load balancers enforce timeout limits around 30-60 seconds, so the request might not even complete. Even if it does, the user experience is poor. They're staring at a loading indicator with no feedback about progress.
 
 The PDF report isn't unique. Video uploads, for example, require transcoding that takes several minutes. Profile photo uploads need resizing, cropping, and generating multiple thumbnail sizes. Bulk operations like sending newsletters to thousands of users or importing large CSV files take even longer. Each of these operations far exceeds what users will reasonably wait for.
@@ -27,6 +30,13 @@ Even if you could scale infinitely, synchronous processing provides terrible use
 Alright, so synchronous processing clearly has its limits when operations take more than a few seconds. What's the alternative?
 
 ## The Solution
+   websocket notification
+
+                add job to db
+client -> server -> db 
+            |        ^
+            v        | update job status
+           queue <- workers
 
 Instead of making the user wait while we generate their PDF, we split the operation into two parts. When they click "Generate Report", we immediately store their request in a queue and return a response: "We're generating your report. We'll notify you when it's ready." This takes milliseconds, not minutes.
 

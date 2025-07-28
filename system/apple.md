@@ -549,3 +549,85 @@ Optimized Storage for Deep Learning Workloads: Leverage high-performance solutio
           hvd.callbacks.BroadcastGlobalVariablesCallback(0)
         ]
   - push all the variable and code to the workers
+
+
+Zeyu Chen
+
+Cruise
+Building the training platform and evaluation for MLE
+Runtime time for ML compute
+Lot on training and inference
+
+Data aggregation
+
+Stablity
+
+HPC runtime
+training platform
+
+ML platform
+Apple Model Training
+Reliability Part
+Tooling for Hanging detection
+How to debug on hanging detection
+Call stacks of running process
+Potential point in the code that could result in hanging
+Interacting with 1000 node trainig
+Dumping call stack
+Aggregate - RAG
+Design a system that can ingest 
+cl command line to run any ml code
+assume that FSDP and DDp already set
+These are data parallel
+Issue in the all reduce functionality
+Hnaging machine because of NvLink NCCL communication
+NVLink: 900 GB/s
+How do you know whether one training job takes days
+vs some which can end quickly
+Rerun one batch or rerun cluser
+
+zeyu chen
+
+Masud Khan
+Bolt platform team
+Compute orchestration layer
+Train models 
+CPU
+Speciy config and submit
+Compute up and ready
+Shared across different tema
+Checkpointing and Storage
+Change Data Capture
+Push it object store
+Regularly
+Async CPU continue pushing
+Optimizing actual push
+S3 Objects
+Optimizer and Gradient
+Momentum
+Optimizer are actually included
+Bolt
+3 teams - 30 - 50 people
+
+Design a system to provide remiders
+- lead time for the reminber
+- notification to surface
+
+
+
+DB
+Meta Sharing
+
+
+yienbien
+- future career growth
+video architecture
+
+grey research 
+multimedia
+ai team
+
+growing team
+
+3-1
+550-650

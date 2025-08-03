@@ -81,6 +81,44 @@ Directly related - apple's design intent
   - v1 and v2
 
 ---
+hong yu teams
+stuart bowers
 
+08/01/25
+
+Core AI within seri
+what parameter and what response
+LLM based
+figure moderize series how to built this systems
+maintain context correct in conversational
+wealth of knowledge
+special touh
+everything that want to know on internet
+can compose text
+many more actions
+calednar
+text mssae
+theorritical can do 
+a lot of things
+talk hands free on the phone
+reminder
+order my favorite food
+
+privacy capturing log
+bet yes some value on the table
+small percent opt in data
+often 
+simluate that we care about
+on-device search
+on device search
+out of distribution
+
+optimization problem
+interesting property
+in context learning
+
+not have enough context
+context
+---
 
 Roman and Chung director of ML Platforms

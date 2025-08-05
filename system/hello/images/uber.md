@@ -1,3 +1,10 @@
+henry
+
+2 step 60 tech screen letcode 
+algo/ds
+
+hiring loop
+5 60 min interview
 
 world market place
 uber machine learning 
@@ -125,4 +132,68 @@ infra pipeline
 - problem navigation - try to understand what they want to buy
   ask redundant questions
   - dont know constraints business problelm navigation
-  
+
+
+TWTh in office
+Hybrid structure
+Sunnyvale and SF
+
+Google 5 years
+Scope
+- ML related work
+- Recommendation systems
+Role
+- ML considerations and involvement
+- backend SW role
+
+- driver pricing team
+  - market place org
+  - mobility and delivery side
+  - driver pricing
+  - how to better set the prices and difft markets
+  - better automate pricings
+  - own different segments 
+
+- new role
+  - tech lead for team of 8
+  - working next gen platform for driver pricing
+  - platform / product
+
+- driver pricing infra
+  - single product
+  - more segments
+    - uber book a ride
+    - uber x
+    - auto
+    - luxury line
+    - more use cases
+    - error prone
+  - offerings today
+    - error prone
+  - not the best for scalability
+    - scalability
+    - multi million QPI speed and scale is bigger
+  - ML team / data science team
+    - more user friendly
+    - what needs to be improved
+    - takes more time and more manual
+    
+- rebuilding driver pricing platform
+  - make it easier to scale
+  - make it easier for partner teams
+
+- scope
+  - forecasting 
+  - delivery
+  - all of google
+  - software water pipes cooling of accela
+  - forecast
+    - expectation
+  - decouple supply / demand
+
+- cohesive
+- triage the problem
+
+henry
+chris becker
+

@@ -1328,7 +1328,7 @@ Here's a breakdown of what the `Ranking Signal Computation` typically computes:
 
 *   **PageRank:** The most famous example. It's a numerical weighting that measures the relative importance of a document based on the quantity and quality of links pointing to it. The algorithm views the web as a graph where pages are nodes and links are edges. A link from an important page confers more "PageRank" than a link from an unimportant one.
     
-    *   **Computation:** This involves iterative calculations over the entire web graph (or a very large subset of it). It's a massive distributed computation, usually done in batch (e.g., daily, weekly).
+    *   **Computation:** This involves iterative calculations over the entire web graph (or a very large subset of it). It's a massive distributed computation, usually done in batch (e.g., daily, weekly)urfin
         
 *   **TrustRank/SpamRank:** Extensions of PageRank that attempt to identify trustworthy or spammy pages by propagating "trust" or "spam" scores through the link graph from a set of known trusted/spammy seed pages.
     

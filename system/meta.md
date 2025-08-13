@@ -1,0 +1,48 @@
+Chat
+- follow up interview
+- move forward with E5 offer
+- explore different pipelines
+- congrats
+- E5
+- team matching process
+- waiting hiring managers to reach out profile
+- possible office locations
+- menlo park
+- sunnyvale burlingame
+- caltrain
+- san francisco
+- reach out to offices in the bay area
+- like the work
+
+Team matching
+- won't be able to talk offer details
+- finalize the team
+- headcount
+- change in the resume
+- adding interested
+- what interested at google
+- resume feedback
+- put up in the resume
+- sometimes team matching
+- couple of days
+- couple of weeks
+- middle of headcount
+- rest of 2025/2026
+- hiring for the time being
+- activity end of the week
+- ml infra
+  - not particular team
+  - looking for certain teams or projects
+  - meta career
+  - careers profile
+    - list out the different public job posting - very generalized
+  - revenue / advertising
+  - infrastructure
+  - messenger / instagram
+  - hearing just is available 
+
+- rsu / benefits
+- waiting game
+  - for hiring managers
+- interview
+  - apple 

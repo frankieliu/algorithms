@@ -1,3 +1,46 @@
+8/15/25
+
+Data point
+
+Compensation team
+- higher data points
+
+Total compensation
+
+- $750k - 500k 250k
+  $50-$80 - discretionary bonus
+  - more than enough to secure our line
+
+- E6 compensation gaps
+  - as close as possible
+  - delta is going be there
+  - fairly significant
+
+- compensation in E6
+  - hesitant to get ball park numbers
+  - will they approve this
+  - don't approve this
+  - disappointment factor
+
+- comp team
+- fairly large delta
+  - discretion on the signon bonus
+  - generous RSU refreshers
+    - 2026 eligible for the refreshers
+    - higher on paper
+  - 30-40% on performance
+- speak with her manager
+
+- career progression
+  - time work
+
+- business 10 days
+  - documentation
+  - compensation days
+
+- rana du
+
+---
 
 8/14/25
 

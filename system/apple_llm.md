@@ -252,5 +252,120 @@
 
 
 
+# Gemini
 
+Andy Tseng
 
+1. Interesting / challenging problems 
+1. Foundational research / practical problems
+1. Collaboration with other teams
+1. Collaborative vs individual-driven
+1. Success in the role 90/long term
+1. ICT4 ICT5 differences
+1. Career progression
+1. Setbacks or failed projects
+
+Personal views
+Siri - flexibility to reach the goal
+Collaboration - different projects
+- nature of the project
+- can't do it by yourself
+- structure / other tools
+- complex system
+  - so many
+  - have access to everything
+  - area about search
+    - global knowledge / contacts local
+    - help on both
+    - internal tool to siri
+    - heavily collaborate with them
+    - mutually respectable accross teams
+- failure taken
+  - post ponent how to 
+  - failure take as a lesson disappointment
+  - fighting for a year
+  - post ponent leader take responsibility
+  - see what what is the real problem and 
+    - fix the 
+    - big delay
+  - quite different than Meta
+    - see failure is quite normal
+    - value user experience the most
+    - 13-14 year - don't want something
+    - million of requests
+      - quality of next generation of project
+      - user will be satisfied
+      - cancel internally
+      - disappointing 
+      - engineers is hard
+    - product
+      - dedicated team / make spec for the product
+      - they know a lot a ux and interface
+      - communicate what siri communicates / constraining
+        - all LLMs
+        - everything can be rendered - underlying technology
+          - risk
+        - HI team 
+
+## Day to day
+1. Teams approach to technical debt
+2. Handle code reviews, testing, and other quality assurance processes
+3. Collaboration tools / project management: Jira / workflow / how to track progress
+   1. complete process - subproject taskboard
+   2. development for LM is so fast
+      1. later on new stuff - ok to bottleneck overtaking
+      2. adaptive - taking things very fast
+      3. boards stick to old system things are moving very fast
+      4. PM there are so many resources
+4. On-call rotations and bug triaging, after hours, remote teams
+
+# Personal growth
+1. how do you get feedback on the team
+2. continuous feedback / frequency of reviews
+   - constructive criticism
+3. opportunities to learn new skills / different areas of AI
+
+   - reflecting on this everyday
+   - publication and doing research
+   - prod - good intern and fully research on intern
+   - 2022 apple all because of interns
+     - flexibility in this team
+     - good reputations
+     - interm tier 1 conference
+     - main tutor - pure researhc visual LLM multimodal
+   - daily growth / career growth
+     - might be super familiar you are good
+     - saturated in the growth curve
+     - find a balance new things and things that you are good at
+     - challenge / propose new things
+   - manager Hong - allows to choose boundary / flexibility
+     - choose we are most interesting in
+     - explore
+     - usually propose
+       - proof of concept - daily work
+
+4. celebrate success both large and small
+5. team outing
+
+# Broader impact
+1. how does the team think about the impact of its work
+2. ethical considerations - public scrutiny over AI
+3. in perfect world, what would this team be able to achieve in the next 5-10 years
+
+# Track
+1. successful query resolution rate
+2. time to first response
+3. user engagement with suggested content
+4. model drift and degradation over time
+5. what process for A/B testing or live experimentation of new models
+6. how to balance achieving high metrics with other constraints like latency, comp cost, data private
+ 
+# feedback
+
+innovation team
+foundation team
+part of their scope
+
+Siri product team
+- ICT5 - significant transparent with cross functional team
+- ICT5 - technical side

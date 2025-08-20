@@ -204,6 +204,12 @@ http://googleusercontent.com/youtube_content/0
 
 Imagine you have reached a fixed point, then this point represents an infinite-depth model.
 
+$x^2 = a$
+
+$x = a/x$
+
+$x_n = (x_{n-1} + a/x_{n-1}) / 2$
+
 [skip](#deep-supervision)
 
 ## Deep Equilibrim Model (DEQ)
@@ -309,6 +315,8 @@ For a single sample $(x,y)$ run multiple forward passes (segments), only backpro
 
 ![alt text](image-9.png)
 
+Helps regularization and therefore generalization.
+
 ## Adaptive Computation Time (ACT)
 
 Brain alternates:
@@ -381,4 +389,8 @@ Trajectories correspond to different Sudoku's examples.
 
 PR of untrained shows no hierarchy.
 
-## 
+## Francois Chollet
+
+https://x.com/fchollet/status/1956442449922138336
+
+https://arcprize.org/blog/hrm-analysis

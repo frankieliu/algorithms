@@ -1,4 +1,6 @@
-# Depth vs Width
+# HRM paper
+
+## Depth vs Width
 
 ![Sudoku Extreme](image-2.png)
 
@@ -15,7 +17,7 @@
 - Note:
   - No talk about the context length dimension...
 
-# Transformer vs HRM
+## Transformer vs HRM
 
 ![alt text](image-3.png)
 
@@ -25,7 +27,7 @@
 
 [Skip](#rnn-architecture)
 
-# AC0
+## AC0
 
 - Network of interconnected gates that perform logical operations.
 - properties:
@@ -35,21 +37,21 @@
   - AC0 cannot solve a counting problem
     - example: determining the parity of a binary number
 
-# TC0
+## TC0
 Same as AC0, but can include a majority gate, can count the number of '1's.
 - can solve the parity problem
 - cannot solve boolean inner product, take inner product of two binary vectors - sum of the element-wise products modulo 2
 
-# Turing Complete
+## Turing Complete
 Most computers are not turing complete, since they require infinite memory and time.  So what is the argument that LLM's are not Turing complete?
 - computation model is different
 
-# claim from paper
+## claim from paper
 - generation of tokens expensive
 - can you use internal state
 - power of latent reasoning still constrained by model's effective computational depth...
 
-# Backpropagation Through Time
+## Backpropagation Through Time
 Backpropagation Through Time (BPTT) is the algorithm used to train recurrent neural networks (RNNs). It's an extension of the standard backpropagation algorithm, adapted for the sequential nature of RNNs. BPTT works by unrolling the RNN in time, creating a deep feedforward neural network where each layer corresponds to a time step.
 
 Here are the key equations involved in BPTT, broken down into the forward and backward passes.
@@ -140,7 +142,7 @@ To provide a visual and more detailed walkthrough, this video explains the proce
 [Video explainer about Backpropagation through time.](https://www.youtube.com/watch?v=0XdPIqi0qpg)
 http://googleusercontent.com/youtube_content/0
 
-# RNN architecture
+## RNN architecture
 
 ![rnn](rnn.png)
 
@@ -153,41 +155,41 @@ http://googleusercontent.com/youtube_content/0
     - cause instability
   - BPTT
 
-# HRM architecture
+## HRM architecture
 
 ![hrm](hrm.png)
 
-# HRM dynamics
+## HRM dynamics
 
-## Residual
+### Residual
 ![Residual](image.png)
 
-## PCA
+### PCA
 ![Principal components](image-1.png)
 
 - 2D PC1 vs PC2 trajectories
 - Color labeled by saturation for step index
 
-# RNN dynamics
+## RNN dynamics
 
-## Residual
+### Residual
 ![alt text](image-4.png)
 
-## PCA
+### PCA
 ![alt text](image-5.png)
 
 ## Deep neural network
 
-## Residual
+### Residual
 ![alt text](image-6.png)
 
 - vanishing gradients
 - gradient doesn't make all the way back to first layers
 
-## PCA
+### PCA
 ![alt text](image-7.png)
 
-# BPTT and BP at Equilibrium
+## BPTT and BP at Equilibrium
 
 - Recall BPTT take O(T) memory, since need to keep activations and gradients for all T steps
 - For HRM, only apply BP at equilibrium point
@@ -196,35 +198,35 @@ http://googleusercontent.com/youtube_content/0
   
 ![alt text](image-8.png)
 
-  $$
+  $
     z^\star = f_\theta(z^\star, x)
-  $$
+  $
 
 Imagine you have reached a fixed point, then this point represents an infinite-depth model.
 
 [skip](#deep-supervision)
 
-# Deep Equilibrim Model (DEQ)
+## Deep Equilibrim Model (DEQ)
 Here’s a clear, high-level explanation of the **Deep Equilibrium Models (DEQ)** paper by Bai, Kolter, and Koltun (NeurIPS 2019) — with key insights and context:
 
 ---
 
-## What Is a Deep Equilibrium Model (DEQ)?
+### What Is a Deep Equilibrium Model (DEQ)?
 
 At its core, DEQ is an **implicit-depth model** that treats the network’s output as a **fixed point** of a transformation, rather than an explicit activation after a stack of layers.
 
 * Traditional deep networks apply $L$ layers sequentially and must store intermediate activations for backpropagation.
 * DEQ instead defines an equilibrium $z^\star$ satisfying:
 
-  $$
+  $
     z^\star = f_\theta(z^\star, x)
-  $$
+  $
 
   In essence, this simulates an **infinite-depth, weight-tied network** that converges to a fixed point.([arXiv][1])
 
 ---
 
-## Key Advantages
+### Key Advantages
 
 1. **Constant Memory Usage**
    Since it doesn't store all intermediate activations, DEQ uses only $O(1)$ memory regardless of its “effective depth.”([arXiv][1])
@@ -243,7 +245,7 @@ At its core, DEQ is an **implicit-depth model** that treats the network’s outp
 
 ---
 
-## How DEQ Works: Forward & Backward
+### How DEQ Works: Forward & Backward
 
 * **Forward Pass**
   Use root-finding algorithms (e.g., Broyden’s method or Anderson acceleration) to solve for the fixed point $z^\star$.([GeeksforGeeks][4], [NeurIPS Papers][3])
@@ -253,7 +255,7 @@ At its core, DEQ is an **implicit-depth model** that treats the network’s outp
 
 ---
 
-## Extensions and Improvements
+### Extensions and Improvements
 
 Several follow-up works build on and address limitations of the original DEQ:
 
@@ -268,7 +270,7 @@ Several follow-up works build on and address limitations of the original DEQ:
 
 ---
 
-## Summary Table
+### Summary Table
 
 | Feature         | DEQ / Extensions                                               |
 | --------------- | -------------------------------------------------------------- |
@@ -280,7 +282,7 @@ Several follow-up works build on and address limitations of the original DEQ:
 
 ---
 
-## TL;DR
+### TL;DR
 
 * DEQ models define outputs as **fixed points** of a learned transformation, simulating infinite-depth, weight-tied networks.
 * They enable **constant-memory** training and efficient backprop using the implicit function theorem.
@@ -301,13 +303,13 @@ Later:
 [7]: https://openreview.net/forum?id=B0oHOwT5ENL&utm_source=chatgpt.com "Neural Deep Equilibrium Solvers"
 [8]: https://arxiv.org/abs/2106.14342?utm_source=chatgpt.com "Stabilizing Equilibrium Models by Jacobian Regularization"
 
-# Deep Supervision
+## Deep Supervision
 
 For a single sample $(x,y)$ run multiple forward passes (segments), only backpropagate through the current segment, even through hidden state is shared across segments.
 
 ![alt text](image-9.png)
 
-# Adaptive Computation Time (ACT)
+## Adaptive Computation Time (ACT)
 
 Brain alternates:
 1. Automatic thinking (fast)
@@ -331,13 +333,52 @@ Overall loss function also takes into account how far away from $\hat{y}$ is fro
 
 ![alt text](image-10.png)
 
-# ACT on Sudoku extreme
+## ACT on Sudoku extreme
 ![alt text](image-11.png)
 
 ![alt text](image-12.png)
 
-# Inference time scaling
+## Inference time scaling
 ![alt text](image-13.png)
 
 1. Train with fewer segments
 1. Scale inference $M_{max}$ 
+
+## Q-learning stability
+
+1. normally have stability problems
+2. use RMSNorm (layer normalization) and AdamW
+
+## Architectural details
+
+$f_I$ embedding layer
+
+$f_L$ $f_H$ encoder transformer blocks -- use element wise addition.
+
+See papers for other details on optimizer, and normalization blocks.
+
+## Visualization
+
+![alt text](image-14.png)
+
+1. Take internal state $z_H, z_L$ and compute the output
+
+1. Maze problem, HRM seems to explore multiple paths and prune blocked routes
+
+1. Sudoku problem, HRM seems to do a DFS and backtrack
+
+1. ARC problem, hill climbing...
+
+## Participation Ratio
+
+![alt text](image-15.png)
+
+![alt text](image-16.png)
+
+PR close to 1 means that eigenvalue is spread well across dimensions.  PR small => concentrated in a few dimensions.
+
+Trajectories correspond to different Sudoku's examples.
+
+PR of untrained shows no hierarchy.
+
+## 

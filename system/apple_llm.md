@@ -369,3 +369,8 @@ part of their scope
 Siri product team
 - ICT5 - significant transparent with cross functional team
 - ICT5 - technical side
+
+# team summary
+1. buy some time
+2. schedule conversation
+3. send team summary - try to get soe

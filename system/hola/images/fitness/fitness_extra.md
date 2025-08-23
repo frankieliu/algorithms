@@ -251,4 +251,66 @@ Correct!
 
 ###### Redis sorted sets provide O(log n) insertions and range queries, enabling efficient leaderboard updates. Each activity completion can increment a user's score atomically, maintaining real-time rankings without expensive database aggregations over millions of records.
 
-# 
+# Question 13 of 15
+
+###### Which pattern BEST enables friends to track live workout progress with minimal system complexity?
+
+1
+
+Real-time database triggers
+
+2
+
+WebSocket connections to all friends
+
+3
+
+Server-sent events for each GPS point
+
+4
+
+Polling updates at predictable intervals
+
+Correct.
+
+###### For fitness tracking, updates occur predictably every few seconds, making polling efficient. Friends can request updates slightly offset from the athlete's transmission schedule, avoiding the complexity of persistent connections while providing near-real-time experience with acceptable latency. 
+
+# Question 14 of 15
+
+###### Batch processing reduces system resource consumption compared to processing individual operations immediately.
+
+1
+
+True
+
+2
+
+False
+
+Correct!
+
+###### Batch processing amortizes overhead costs across multiple operations. Instead of individual GPS updates requiring separate database transactions, network calls, and I/O operations, batching groups operations together, significantly reducing resource consumption per operation.
+
+# Question 15 of 15
+
+###### Redis sorted sets enable efficient leaderboard operations because they provide which time complexity for rank retrieval?
+
+1
+
+O(log n) logarithmic time
+
+2
+
+O(n) linear time
+
+3
+
+O(1) constant time
+
+4
+
+O(n log n) linearithmic time
+
+Correct.
+
+###### Redis sorted sets use skip lists internally, providing O(log n) time complexity for insertions, deletions, and range queries. This logarithmic performance enables efficient leaderboard operations even with millions of users, unlike O(n) operations that would become prohibitively slow.

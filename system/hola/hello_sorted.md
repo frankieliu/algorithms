@@ -5,8 +5,8 @@
 - api design
 - cap theorem
 - consistent hashing
-+ [ ] numbers to know
-+ [ ] database indexing
++ [x] numbers to know
++ [x] database indexing
 
 # Systems
 

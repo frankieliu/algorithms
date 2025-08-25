@@ -39,13 +39,13 @@
 - ad click aggregator
 
 # Patterns
-+ [ ] real-time updates
-+ [ ] dealing with contention
-+ [ ] multi-step processes
-+ [ ] scaling reads
-+ [ ] scaling writes
-+ [ ] handling large blobs
-+ [ ] managing long running jobs
++ [x] real-time updates
++ [x] dealing with contention
++ [x] multi-step processes
++ [x] scaling reads
++ [x] scaling writes
++ [x] handling large blobs
++ [x] managing long running jobs
 
 # Key Technologies
 - redis

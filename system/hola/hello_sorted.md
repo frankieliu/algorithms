@@ -54,10 +54,10 @@
 - api gateway
 - cassandra
 - dynamoDB
-+ [ ] PostgreSQL
-+ [ ] Flink
-+ [ ] ZooKeeper
++ [x] PostgreSQL
++ [x] Flink
++ [x] ZooKeeper
 
 # Advanced Topics
-+ [ ] data structures for big
++ [x] data structures for big
 

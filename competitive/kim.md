@@ -1,11 +1,113 @@
-True anxiety
+# Over-stimulating
+1. adjust to it
+2. don't have expectation that it will solve
+   1. starting 4 o'clock
+   2. start watching things that are
+   3. turn down like a light switch
+   4. Take time
+3. linked to stressor
+
+4. environment frustrated
+5. quit 
+
+6. Keep doing what I am doing
+7. Facing fear and overcoming
+8. Walking through forest with flashlight
+  
+# Exercise
+1. Get heart exercising
+2. Body moves and shakes things off
+3. Food intake
+   1. Eat something lighter
+   2. Sugar clash at night
+   3. Have scoop of almond butter
+4. Switch from work to home
+   1. Transition - take shower as a transition
+   2. Walk / Shower - let's go for a walk
+
+# Calm down
+1. When walking up, try to keep eye closed
+2. Put very little light - very sensitive
+3. Slowly waking up - eyes closed
+
+# Awkward
+1. Deficit - not meeting people's expectations
+2. Tolerate that
+3. Inner critic
+   1. Make meaning
+   2. I should have could have - magical thinking
+4. Tired, social exhausting, putting mask
+5. Modulate and scale back some
+6. Gather energy
+
+# Ask if it is helpful
+1. Is this helpful
+2. Look at the behavior
+   1. Is it being helpful
+   2. Plan ahead of time
+3. Would I do the same thing tomorrow
+4. Going to make feel good or worse 
+
+# Surviving
+1. survive the day
+   1. every hour
+2. do a few things at a time
+3. live in the moment
+4. just show up is enough
+
+# Focus
+1. all or nothing, catastrophizing
+2. Nobody can make you sad
+   1. I don't have to fall into that
+3. have control of the situation
+4. given some flexibility and time
+   1. there is choice I choose to go to work
+   2. reward - not doing for free
+   3. see the power
+5. see that I am asset to the organization
+
+# choose
+1. choose to lean into anxiety
+2. I have a choice, I am just going to be me
+3. I can't read between the lines
+
+# Shifting from fear what is the worse things that can happen
+Shift 
+Laugh more - do the things that I think will enjoy
+- hunt flowers
+- fixing - do it yourself
+
+Cortisoal adrenaline epinephrine
+Oxitocin
+- fall in love - hugging / pet
+- get senses awaken
+- focusing on other people
+
+# Write 2 things
+- set goals
+- want to accomplish
+- review article
+- talk to someone get clarification
+- achieving goals / planning
+- rather than looking at deficit
+- small tasks make big goals
+- do all the little work for the big one
+- if let little ones fall off
+- objectives - realistic vision
+
+# Self compassion
+- can get help
+- delegate
+- open approach - let everyone know that I am stuck
+  
+# True anxiety
 
 1. Full of anxiety
 Pushing away emotions
 put a lot expectations
 full of emotions
 
-2. False anxiety
+1. False anxiety
 Worried about bad things are going to happen
 Go to work and cope with it
 Tolerate it
@@ -20,7 +122,7 @@ Listen to anxiety - don't go back to work
 - challenge comes with growth
 - ways not 
 
-3. Manager
+1. Manager
 - do this or else
 - conversation
 - do this ambiguous
@@ -33,7 +135,7 @@ Listen to anxiety - don't go back to work
 - demands with prescriptive
 - personality issue
 
-4. Listen to the situation
+1. Listen to the situation
 - doesn't like me
 - watch me fail
 - setting me up for failure not success
@@ -54,12 +156,12 @@ Listen to anxiety - don't go back to work
 - listen to me
   - this person is not supportive and plan b
 
-5. Belittling
+1. Belittling
 - is that going to motivate
 - motive myself
 - recognize my own strength
 
-6. Anxiety is going to spike
+1. Anxiety is going to spike
 - one day at a time
 - one hour at a time
 - focusing one hour at a time
@@ -76,7 +178,7 @@ Listen to anxiety - don't go back to work
     - humor
   - 3 and 5 days anxiety will subside
 
-7. inflame
+1. inflame
   - do the best you can
   - manager is to inflame
   - cool the anxiety down
@@ -92,28 +194,28 @@ Listen to anxiety - don't go back to work
   - hate it if I don't play that game
     - not a puppet
 
-8. don't need a hotline
+2. don't need a hotline
   - not able to manager mood
   - success to manage mood
   - scared of how we feel
   - don't have to be scared
   - build resilience
 
-9. go on a challenge
+3. go on a challenge
   - survive for three days
   - if you are counting
     - won't be able to stand on our own
   - true fear
     - telling ourselves about the situation
 
-10. resilience
+4.  resilience
   - stick it note
   - just breathe
   - it is going to be over
   - manager
   - that's ok
 
-11. walk with my emotions
+5.  walk with my emotions
  - calm and cool
  - slow down
  - give me time to think about it

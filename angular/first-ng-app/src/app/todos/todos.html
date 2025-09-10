@@ -1,0 +1,12 @@
+<p>todos works!</p>
+<p>Loading...</p>
+
+<ul class="todos">
+@for (item of items(); track item.id) {
+    <!-- BEM terminology -->
+    <li class="todos__item">
+        <input id="todo-{{ item.id }}" type="checkbox" [value]="item.completed">
+        <label for="todo-{{ item.id }}">{{ item.title }}</label>
+    </li>
+}
+</ul>

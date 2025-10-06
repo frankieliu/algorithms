@@ -13,7 +13,6 @@ Got it — you’re aiming for **senior-level ML Ops interview prep**, so I’ll
 * What’s your approach for managing multi-tenant ML workloads (e.g., data scientists with different models and libraries) in a Kubernetes environment?
 
 
-
 * How would you architect an ML workflow so that it supports reproducibility, lineage tracking, and auditing?
 * Explain how you’d support hybrid cloud or on-prem GPU clusters for training at scale.
 

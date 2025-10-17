@@ -1,0 +1,1 @@
+https://discuss.huggingface.co/c/course/20

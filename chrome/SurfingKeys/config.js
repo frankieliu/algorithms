@@ -81,7 +81,7 @@ async function getTabs() {
 }
 
 // an example to create a new mapping `ctrl-y`
-api.mapkey('<Ctrl-y>', 'Show me the money', async function () {
+api.mapkey('<Ctrl-Shift-y>', 'Show me the money', async function () {
     const allTabs = await getTabs();
     console.log("Getting tabs ", allTabs);
     const formattedDate = timestampString();

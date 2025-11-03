@@ -81,7 +81,7 @@ async function getTabs() {
 }
 
 // an example to create a new mapping `ctrl-y`
-api.mapkey('<Ctrl-Shift-y>', 'Show me the money', async function () {
+api.mapkey('gw', 'Show me the money', async function () {
     const allTabs = await getTabs();
     console.log("Getting tabs ", allTabs);
     const formattedDate = timestampString();
@@ -93,6 +93,8 @@ api.mapkey('<Ctrl-Shift-y>', 'Show me the money', async function () {
 
 // an example to replace `T` with `gt`, click `Default mappings` to see how `T` works.
 api.map('gt', 'T');
+
+api.map('g')
 
 // an example to remove mapkey `Ctrl-i`
 api.unmap('<ctrl-i>');

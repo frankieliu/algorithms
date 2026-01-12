@@ -1,0 +1,1 @@
+[can llms predict their own failures](https://huggingface.co/papers/2512.20578)

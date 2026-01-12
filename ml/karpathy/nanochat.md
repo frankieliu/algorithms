@@ -1,0 +1,1 @@
+[nano chat mini](https://github.com/karpathy/nanochat/discussions/420)
